@@ -55,7 +55,6 @@ function checkKnight(from, to) {
 
   //check if move is an 2 by 1 move in each direction with a for loop
   delta = sub(to, from);
-  console.log("DELT:" +delta);
 
   for(var i = 0; i < 2; i++)
     for(var j = 0; j < 2; j++)

@@ -10,11 +10,12 @@ var myboard = [ [0,0,0,0,0,0,0,0],
 function computerMove() {
   console.log("Computer Move");
   getBoard();
-  console.log(myboard);
-  console.log(possibleMoves());
+  //console.log(myboard);
+  //console.log(possibleMoves());
   nextMove = minimax(4, -1, false);
-  document.getElementById(nextMove[1]).innerHTML = document.getElementById(nextMove[0]).innerHTML;
-  document.getElementById(nextMove[0]).innerHTML = ""; 
+  console.log(nextMove);
+  document.getElementById("f"+nextMove[1][0]+nextMove[1][1]).innerHTML = document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).innerHTML;
+  document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).innerHTML = ""; 
 }
 
 
@@ -32,14 +33,14 @@ function possibleMoves()
           {
             //console.log("f"+i+j+" => "+"f"+k+l+ ": "+ check("f"+i+j, "f"+k+l));
             //console.log("counters: "+i+" "+j+" "+k+" "+l);
-            if( check("f"+i+j, "f"+k+l) )
+            if( check([i,j], [k, l]) )
             {
               oldFigure = myboard[k][l];
               myboard[k][l] = myboard[i][j];
               myboard[i][j] = "";
               difference = evaluateBoard()-valueBevore;
               //console.log(myboard);
-              moves.push(["f"+i+j, "f"+k+l, difference]);
+              moves.push([[i, j], [k, l], difference]);
               myboard[i][j]=myboard[k][l];
               myboard[k][l]=oldFigure;
             }
@@ -86,7 +87,7 @@ function minimax(depth, player, init)
   //console.log("minimax("+depth+", "+player+")");
   
   var moves = possibleMoves();
-  //console.log(moves);
+  //console.log("MOVES: "+moves);
   var maxPoints = [0, 0, 0];
   var bestMove = [0, 0, 0];
   
