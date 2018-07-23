@@ -31,7 +31,9 @@ function checkPawn(from, to) {
     if(comp(delta, [0, 1*player]) && !isEnemy(from,to)) return true;
 
     //check double start move
-    if(comp(delta, [0, 2*player]) && (getXY(from)[1]==1 ||getXY(from)[1]==6)) return true;
+    if(comp(delta, [0, 2*player]) && (getXY(from)[1]==1 ||getXY(from)[1]==6)) 
+      if(!isEnemy(from, to))
+        return true;
     
     //check diagonal 1 when attacking enemy
     if( ( comp(delta, [1*player, 1*player]) && isEnemy(from, to) ) || ( comp(delta, [-1*player, 1*player]) && isEnemy(from, to) ) ) return true;

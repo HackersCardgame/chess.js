@@ -12,7 +12,7 @@ function computerMove() {
   getBoard();
   console.log(myboard);
   console.log(possibleMoves());
-  console.log("VALUE: "+evaluateBoard());
+  console.log(minimax(5, -1, false));
 }
 
 
@@ -36,7 +36,7 @@ function possibleMoves()
               myboard[k][l] = myboard[i][j];
               myboard[i][j] = "";
               difference = evaluateBoard()-valueBevore;
-              console.log(myboard);
+              //console.log(myboard);
               moves.push(["f"+i+j, "f"+k+l, difference]);
               myboard[i][j]=myboard[k][l];
               myboard[k][l]=oldFigure;
@@ -81,59 +81,71 @@ function countField(i, j)
 //minmax algorithm that does the game
 function minimax(depth, player, init)
 {
-  if ( depth==0 || possibleMoves(myboard) == "" || win(myboard) != 0 )
-    return win(myboard);
+  //console.log("minimax("+depth+", "+player+")");
+  
+  var moves = possibleMoves();
+  //console.log(moves);
+  var maxPoints = [0, 0, 0];
+  var bestMove = [0, 0, 0];
+  
+  for(var i = 0; i < moves.length; i++)
+  {
+    //maximizing player
+    if(player==1)
+      if(maxPoints[2] < moves[i][2])
+      {
+        maxPoints = moves[i].slice();
+      }
+    //minimizing player
+    if(player==-1)
+      if(maxPoints[2] > moves[i][2])
+      {
+        maxPoints = moves[i].slice();
+      }
+  }
 
-  var bestMove = [];
-  var moves = possibleMoves(myboard);
 
+  if(depth < 1) return maxPoints;
+  depth -= 1;
+
+  //maximizing player  
   if(player==1)
   {
-    var bestValue = -10000000;
-    for (var i = 0; i < moves.length; i++)
+    bestMove=[0,0,-1000000];
+    for(var i = 0; i < moves.length; i++)
     {
-      myboard[moves[i][0]][moves[i][1]]=player;
-      var value = minimax(depth-1, -player, false);
-      if(value>bestValue)
+      if(moves[i][2]==maxPoints[2])
       {
-        bestValue=value;
-        bestMove=moves[i];
-        if(init)  drawHypothesis(myboard, "lightgreen", "p:"+player+" d:"+depth+" m:"+moves.length+" i:"+i+" best:"+bestValue, depth);
-        if(debug) if(depth>1) drawHypothesis(myboard, "lightgreen", "p:"+player+" d:"+depth+" m:"+moves.length+" i:"+i+" best:"+bestValue, depth);
+        var myArray = minimax(depth-1, -player, false);
+        //console.log("Myarray >:"+myArray+" bestMove: "+bestMove);
+        if(myArray[2]>bestMove[2])
+        {
+          bestMove=moves[i].slice();
+          //console.log("BETTER");
+        }
       }
-      else
-      {
-        if(init)  drawHypothesis(myboard, "#f00", "p:"+player+" d:"+depth+" m:"+moves.length+" i:"+i+" best:"+bestValue, depth);
-        if(debug) if(depth>1) drawHypothesis(myboard, "#f00", "p:"+player+" d:"+depth+" m:"+moves.length+" i:"+i+" best:"+bestValue, depth);
-      }
-      myboard[moves[i][0]][moves[i][1]]=0;
     }
   }
 
   if(player==-1)
   {
-    var bestValue = 10000000;
-    for (var i = 0; i < moves.length; i++)
+    bestMove=[0,0,1000000];
+    for(var i = 0; i < moves.length; i++)
     {
-      myboard[moves[i][0]][moves[i][1]]=player;
-      var value = minimax(depth-1, -player, false);
-      if(value<bestValue)
+      if(moves[i][2]==maxPoints[2])
       {
-        bestValue=value;
-        bestMove=moves[i];
-        if(init)  drawHypothesis(myboard, "lightgreen", "p:"+player+" d:"+depth+" m:"+moves.length+" i:"+i+" best:"+bestValue, depth);
-        if(debug) if(depth>1) drawHypothesis(myboard, "lightgreen", "p:"+player+" d:"+depth+" m:"+moves.length+" i:"+i+" best:"+bestValue, depth);
-
+        //console.log("checkp2:"+moves[i]);
+        var myArray = minimax(depth-1, -player, false);
+        //console.log("Myarray <:"+myArray+" bestMove: "+bestMove);
+        if(myArray[2]<bestMove[2])
+        {
+          bestMove=moves[i].slice();
+          //console.log("BETTER");
+        }
       }
-      else
-      {
-        if(init)  drawHypothesis(myboard, "#f00", "p:"+player+" d:"+depth+" m:"+moves.length+" i:"+i+" best:"+bestValue, depth);
-        if(debug) if(depth>1) drawHypothesis(myboard, "#f00", "p:"+player+" d:"+depth+" m:"+moves.length+" i:"+i+" best:"+bestValue, depth);
-      }
-      myboard[moves[i][0]][moves[i][1]]=0;
     }
   }
-    if (init) return bestMove;
-    else return bestValue;
+  //console.log("BEST: "+bestMove);
+  return bestMove;
 }
 
