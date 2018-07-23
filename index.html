@@ -1,0 +1,41 @@
+<html>
+  <head>
+    <title>Tic Tac Toe</title>
+    <script src="./helperfunctions.js"></script>
+    <script src="./minimax.js"></script>
+    <link rel="stylesheet" href="./style.css">
+  </head>
+  <body style="font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;">
+
+
+<div>
+<h1>Schach mit Mini-Max Algorithmus / Alpha-Beta Algorithmus<br></h1> <font color=red size=8em>Rekursionstiefe:</font> <input id="depth" type="number" min="0" value="9" style="font-size:24px; width:40; text-align:center;"></input> 
+<br><br>
+
+<button id=f00>♜</button><button id=f01>♞</button><button id=f02>♝</button><button id=f03>♛</button><button id=f04>♚</button><button id=f05>♝</button><button id=f06>♞</button><button id=f07>♜</button><br>
+<button id=f10>♟</button><button id=f11>♟</button><button id=f12>♟</button><button id=f13>♟</button><button id=f14>♟</button><button id=f15>♟</button><button id=f16>♟</button><button id=f17>♟</button><br>
+<button id=f20></button><button id=f21></button><button id=f22></button><button id=f23></button><button id=f24></button><button id=f25></button><button id=f26></button><button id=f27></button><br>
+<button id=f30></button><button id=f31></button><button id=f32></button><button id=f33></button><button id=f34></button><button id=f35></button><button id=f36></button><button id=f37></button><br>
+<button id=f40></button><button id=f41></button><button id=f42></button><button id=f43></button><button id=f44></button><button id=f45></button><button id=f46></button><button id=f47></button><br>
+<button id=f50></button><button id=f51></button><button id=f52></button><button id=f53></button><button id=f54></button><button id=f55></button><button id=f56></button><button id=f57></button><br>
+<button id=f60>♙</button><button id=f61>♙</button><button id=f62>♙</button><button id=f63>♙</button><button id=f64>♙</button><button id=f65>♙</button><button id=f66>♙</button><button id=f67>♙</button><br>
+<button id=f70>♖</button><button id=f71>♘</button><button id=f72>♗</button><button id=f73>♕</button><button id=f74>♔</button><button id=f75>♗</button><button id=f76>♘</button><button id=f77>♖</button><br>
+
+<br>    <br>
+<div>
+<button onclick='alert("RESET NOT IMPLEMENTED YET")' style="width:200">Reset</button>
+    <br>
+    <p id="output">
+    </p>
+  </body>
+
+<a href="https://github.com/braindef/chess.js">https://github.com/braindef/chess.js</a>
+
+<script>
+colorizeHtml();
+registerMouselistener();
+
+</script>
+</html>
+
+
