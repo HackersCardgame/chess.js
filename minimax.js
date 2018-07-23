@@ -7,15 +7,19 @@ var myboard = [ [0,0,0,0,0,0,0,0],
                 [0,0,0,0,0,0,0,0],
                 [0,0,0,0,0,0,0,0] ];
 
+var valueBefore = 0;
+
 function computerMove() {
   console.log("Computer Move");
   getBoard();
   //console.log(myboard);
   //console.log(possibleMoves());
-  nextMove = minimax(4, -1, false);
+  valueBefore = evaluateBoard();
+  nextMove = minimax(3, -1, true);
   console.log(nextMove);
   document.getElementById("f"+nextMove[1][0]+nextMove[1][1]).innerHTML = document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).innerHTML;
-  document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).innerHTML = ""; 
+  document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).innerHTML = "";
+  getBoard(); 
 }
 
 
@@ -23,7 +27,6 @@ function computerMove() {
 function possibleMoves()
 {
   oldFigure="";
-  valueBevore = evaluateBoard();
   var moves=[];
   for(var i = 0; i < 8; i++)
     for(var j = 0; j < 8; j++)
@@ -33,16 +36,10 @@ function possibleMoves()
           {
             //console.log("f"+i+j+" => "+"f"+k+l+ ": "+ check("f"+i+j, "f"+k+l));
             //console.log("counters: "+i+" "+j+" "+k+" "+l);
-            if( check([i,j], [k, l]) )
+            if( check( [i,j], [k, l] ) )
             {
-              oldFigure = myboard[k][l];
-              myboard[k][l] = myboard[i][j];
-              myboard[i][j] = "";
-              difference = evaluateBoard()-valueBevore;
               //console.log(myboard);
-              moves.push([[i, j], [k, l], difference]);
-              myboard[i][j]=myboard[k][l];
-              myboard[k][l]=oldFigure;
+              moves.push([[i, j], [k, l]]);
             }
           }
   return moves;
@@ -59,9 +56,6 @@ function evaluateBoard() {
 
 function countField(i, j)
 {
-  // ["♕", "♔", "♗", "♘", "♖", "♙"]
-  // ["♛", "♚", "♝", "♞", "♜", "♟"]
-
   switch (myboard[i][j]) {
     case "♔": return 1000;   //white maximizing
     case "♕": return   50;
@@ -76,7 +70,7 @@ function countField(i, j)
     case "♝": return   -20;
     case "♞": return   -15;
     case "♟": return    -5;
-    }
+  }
     return 0;
 }
 
@@ -84,71 +78,75 @@ function countField(i, j)
 //minmax algorithm that does the game
 function minimax(depth, player, init)
 {
-  //console.log("minimax("+depth+", "+player+")");
-  
+  console.log("minimax("+depth+", "+player+")");
+
   var moves = possibleMoves();
-  //console.log("MOVES: "+moves);
-  var maxPoints = [0, 0, 0];
-  var bestMove = [0, 0, 0];
-  
-  for(var i = 0; i < moves.length; i++)
-  {
-    //maximizing player
-    if(player==1)
-      if(maxPoints[2] < moves[i][2])
-      {
-        maxPoints = moves[i].slice();
-      }
-    //minimizing player
-    if(player==-1)
-      if(maxPoints[2] > moves[i][2])
-      {
-        maxPoints = moves[i].slice();
-      }
-  }
 
+  var bestMove = [[0,0],[0,0]];    
 
-  if(depth < 1) return maxPoints;
-  depth -= 1;
+  if(depth < 1) return valueBefore-evaluateBoard();
+
 
   //maximizing player  
   if(player==1)
   {
-    bestMove=[0,0,-1000000];
+    var bestValue=-1000000;
     for(var i = 0; i < moves.length; i++)
     {
-      if(moves[i][2]==maxPoints[2])
-      {
-        var myArray = minimax(depth-1, -player, false);
-        //console.log("Myarray >:"+myArray+" bestMove: "+bestMove);
-        if(myArray[2]>bestMove[2])
+
+        rollback = myboard[moves[i][1][0]][moves[i][1][1]];
+        myboard[moves[i][1][0]][moves[i][1][1]] = myboard[moves[i][0][0]][moves[i][0][1]];
+        myboard[moves[i][0][0]][moves[i][0][1]] = "";
+   
+        var value = minimax(depth-1, -player, false);
+        
+        console.log("+VAL: "+value);
+
+        if(value>bestValue)
         {
-          bestMove=moves[i].slice();
-          //console.log("BETTER");
+          console.log("i if"+i);
+          bestValue = value;
+          bestMove = moves[i].slice();
+          console.log("Set 1: " +bestMove);
         }
-      }
+
+        myboard[moves[i][0][0]][moves[i][0][1]] = myboard[moves[i][1][0]][moves[i][1][1]];
+        myboard[moves[i][1][0]][moves[i][1][1]] = rollback;
     }
   }
-
+  
+  //minimizing player  
   if(player==-1)
   {
-    bestMove=[0,0,1000000];
+    var bestValue=1000000;
     for(var i = 0; i < moves.length; i++)
     {
-      if(moves[i][2]==maxPoints[2])
-      {
-        //console.log("checkp2:"+moves[i]);
-        var myArray = minimax(depth-1, -player, false);
-        //console.log("Myarray <:"+myArray+" bestMove: "+bestMove);
-        if(myArray[2]<bestMove[2])
+        rollback = myboard[moves[i][1][0]][moves[i][1][1]];
+        myboard[moves[i][1][0]][moves[i][1][1]] = myboard[moves[i][0][0]][moves[i][0][1]];
+        myboard[moves[i][0][0]][moves[i][0][1]] = "";
+   
+        var value = minimax(depth-1, -player, false);
+
+        console.log("-VAL: "+value);
+
+        if(value<bestValue)
         {
-          bestMove=moves[i].slice();
-          //console.log("BETTER");
+          bestValue = value;
+          bestMove = moves[i].slice();
+          console.log("Set -1: " +bestMove);
         }
-      }
+
+        myboard[moves[i][0][0]][moves[i][0][1]] = myboard[moves[i][1][0]][moves[i][1][1]];
+        myboard[moves[i][1][0]][moves[i][1][1]] = rollback;
     }
   }
-  //console.log("BEST: "+bestMove);
-  return bestMove;
+  
+  if (init) 
+  {
+    console.log(bestMove + " value: "+bestValue);
+    return bestMove;
+  }
+  else return bestValue;
+
 }
 
