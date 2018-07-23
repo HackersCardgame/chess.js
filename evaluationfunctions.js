@@ -7,6 +7,8 @@ function check(from, to) {
     if(checkBishop(from, to)) return true;
     
     if(checkRook(from, to)) return true;
+    
+    if(checkQueen(from, to)) return true;
 
   return false;
 }
@@ -76,6 +78,11 @@ function checkBishop(from, to) {
 
   if(player == 0) return false;
 
+  return checkDiagonal(from, to);
+}
+
+
+function checkDiagonal(from, to) {
   //check if move is diagonal
   delta = sub(getXY(to), getXY(from));
   var direction = [0, 0];
@@ -116,6 +123,11 @@ function checkRook(from, to) {
 
   if(player == 0) return false;
 
+  return checkStraight(from, to);
+
+}
+
+function checkStraight(from, to) {
   //check if move is straight
   delta = sub(getXY(to), getXY(from));
 
@@ -156,6 +168,19 @@ function checkRook(from, to) {
 
   return false;
   
+}
+
+
+function checkQueen(from, to) {
+  player = 0;
+  if (document.getElementById(from).innerHTML=="♛") 
+    player = 1;
+  if (document.getElementById(from).innerHTML=="♕") 
+    player = -1;
+
+  if(player == 0) return false;
+  
+  return checkDiagonal(from, to) || checkStraight(from, to);
 }
 
 
