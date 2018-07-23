@@ -76,11 +76,26 @@ function checkBishop(from, to) {
 
   //check if move is diagonal
   delta = sub(getXY(to), getXY(from));
+  var direction = [0, 0];
+  var step = [0, 0];
+  direction[0] = Math.sign(delta[0]);
+  direction[1] = Math.sign(delta[1]);
   delta[0] = Math.abs(delta[0]);
   delta[1] = Math.abs(delta[1]);
 
-  for(var i=0; i<8; i++)
+  for(var i=1; i<delta[0]+1; i++)
   {
+    step[1] = getXY(from)[0]+(direction[0]*scalar([1 ,1], i)[0]);
+    step[0] = getXY(from)[1]+(direction[1]*scalar([1 ,1], i)[1]);
+    if(!isEmpty("f"+step[0]+step[1]))
+    {
+      if(i==delta[0] && isEnemy(from, to))
+        return true;
+      console.log("return for non-empty");
+      return false;
+    }
+    console.log(comp(delta, scalar([1, 1], i)));
+    console.log(delta);
     console.log(scalar([1, 1], i));
     if(comp(delta, scalar([1, 1], i)))
       return true;
@@ -92,8 +107,8 @@ function checkBishop(from, to) {
 
 
 function getXY(place) {
-  y = place.substring(1,2);
-  x = place.substring(2,3);
+  y = parseInt(place.substring(1,2));
+  x = parseInt(place.substring(2,3));
   return [x, y]
 }
 
@@ -112,6 +127,7 @@ function isEnemy(from, to) {
 }
 
 function isEmpty(to) {
+  console.log(to);
   target = document.getElementById(to).innerHTML;
 
   if(target == "♕" || target == "♔" || target == "♗" || target == "♘" || target == "♖" || target == "♙" ||
