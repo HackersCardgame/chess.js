@@ -1,4 +1,4 @@
-    myboard = [ [0,0,0,0,0,0,0,0],
+var myboard = [ [0,0,0,0,0,0,0,0],
                 [0,0,0,0,0,0,0,0],
                 [0,0,0,0,0,0,0,0],
                 [0,0,0,0,0,0,0,0],
@@ -34,8 +34,12 @@ function possibleMoves()
             {
               oldFigure = myboard[k][l];
               myboard[k][l] = myboard[i][j];
-              difference = valueBevore - evaluateBoard();
-              moves.push(["f"+i+j, "f"+k+l, difference]);              
+              myboard[i][j] = "";
+              difference = evaluateBoard()-valueBevore;
+              console.log(myboard);
+              moves.push(["f"+i+j, "f"+k+l, difference]);
+              myboard[i][j]=myboard[k][l];
+              myboard[k][l]=oldFigure;
             }
           }
   return moves;
