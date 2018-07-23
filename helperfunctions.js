@@ -21,7 +21,6 @@ fields = [["f00", "f01", "f02", "f03", "f04", "f05", "f06","f07"],
           ["f70", "f71", "f72", "f73", "f74", "f75", "f76","f77"]];
 
 
-firstSelected = false;
 
 //register mouselistener to fields
 function colorizeHtml() {
@@ -34,13 +33,25 @@ function colorizeHtml() {
   }
 }
 
+firstSelected = "";
+
 //register mouselistener to fields
 function registerMouselistener() {
   for (var i = 0; i<8; i++) {
     for (var j = 0; j<8; j++) {
       document.getElementById(fields[i][j]).onclick = function( event ) {
-        alert(event.target.id);
-        
+        //alert(event.target.id);
+        if (firstSelected=="") {
+          document.getElementById(event.target.id).className="selected";
+          firstSelected=event.target.id;
+        }
+        else {
+          document.getElementById(firstSelected).className="";
+          //alert(document.getElementById(firstSelected).innerHTML);
+          document.getElementById(event.target.id).innerHTML = document.getElementById(firstSelected).innerHTML;
+          document.getElementById(firstSelected).innerHTML="";
+          firstSelected="";
+        }
       }
     }
   }
