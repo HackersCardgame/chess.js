@@ -145,6 +145,11 @@ function add(a, b) {
   return x;
 }
 
+function scalar(a, scalar) {
+  return a.map(function(x) { return x * scalar; });
+}
+
+
 function comp(a, b) {
   var x = a.map(function(item, index) {
     // In this case item correspond to currentValue of array a, 

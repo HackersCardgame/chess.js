@@ -4,6 +4,7 @@ function check(from, to) {
 
     if(checkKnight(from, to)) return true;
 
+    if(checkBishop(from, to)) return true;
 
   return false;
 }
@@ -41,11 +42,11 @@ function checkKnight(from, to) {
     player = -1;
 
   if(player == 0) return false;
-  console.log(player);
+
 
   //check if move is an 2 by 1 move in each direction with a for loop
   delta = sub(getXY(to), getXY(from));
-  console.log("Knight delta: "+delta);
+
   for(var i = 0; i < 2; i++)
     for(var j = 0; j < 2; j++)
     {
@@ -62,6 +63,31 @@ function checkKnight(from, to) {
           return true;
      }
      return false;
+}
+
+function checkBishop(from, to) {
+  player = 0;
+  if (document.getElementById(from).innerHTML=="♝") 
+    player = 1;
+  if (document.getElementById(from).innerHTML=="♗") 
+    player = -1;
+
+  if(player == 0) return false;
+
+  //check if move is diagonal
+  delta = sub(getXY(to), getXY(from));
+  delta[0] = Math.abs(delta[0]);
+  delta[1] = Math.abs(delta[1]);
+
+  for(var i=0; i<8; i++)
+  {
+    console.log(scalar([1, 1], i));
+    if(comp(delta, scalar([1, 1], i)))
+      return true;
+  }
+
+  return false;
+
 }
 
 
