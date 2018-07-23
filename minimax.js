@@ -12,11 +12,8 @@ var valueBefore = 0;
 function computerMove() {
   console.log("Computer Move");
   getBoard();
-  //console.log(myboard);
-  //console.log(possibleMoves());
   valueBefore = evaluateBoard();
-  nextMove = minimax(3, -1, true);
-  console.log(nextMove);
+  nextMove = minimax(4, -1, true);
   document.getElementById("f"+nextMove[1][0]+nextMove[1][1]).innerHTML = document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).innerHTML;
   document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).innerHTML = "";
   getBoard(); 
@@ -34,11 +31,8 @@ function possibleMoves()
         for(var k = 0; k < 8; k ++)
           for(var l = 0; l < 8; l++)
           {
-            //console.log("f"+i+j+" => "+"f"+k+l+ ": "+ check("f"+i+j, "f"+k+l));
-            //console.log("counters: "+i+" "+j+" "+k+" "+l);
             if( check( [i,j], [k, l] ) )
             {
-              //console.log(myboard);
               moves.push([[i, j], [k, l]]);
             }
           }
@@ -78,7 +72,6 @@ function countField(i, j)
 //minmax algorithm that does the game
 function minimax(depth, player, init)
 {
-  console.log("minimax("+depth+", "+player+")");
 
   var moves = possibleMoves();
 
@@ -100,14 +93,11 @@ function minimax(depth, player, init)
    
         var value = minimax(depth-1, -player, false);
         
-        console.log("+VAL: "+value);
 
         if(value>bestValue)
         {
-          console.log("i if"+i);
           bestValue = value;
           bestMove = moves[i].slice();
-          console.log("Set 1: " +bestMove);
         }
 
         myboard[moves[i][0][0]][moves[i][0][1]] = myboard[moves[i][1][0]][moves[i][1][1]];
@@ -127,13 +117,10 @@ function minimax(depth, player, init)
    
         var value = minimax(depth-1, -player, false);
 
-        console.log("-VAL: "+value);
-
         if(value<bestValue)
         {
           bestValue = value;
           bestMove = moves[i].slice();
-          console.log("Set -1: " +bestMove);
         }
 
         myboard[moves[i][0][0]][moves[i][0][1]] = myboard[moves[i][1][0]][moves[i][1][1]];
@@ -143,7 +130,6 @@ function minimax(depth, player, init)
   
   if (init) 
   {
-    console.log(bestMove + " value: "+bestValue);
     return bestMove;
   }
   else return bestValue;
