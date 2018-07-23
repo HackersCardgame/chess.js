@@ -2,6 +2,9 @@
 function check(from, to) {
     if(checkPawn(from, to)) return true;
 
+    if(checkKnight(from, to)) return true;
+
+
   return false;
 }
 
@@ -29,6 +32,39 @@ function checkPawn(from, to) {
 
 }
 
+
+function checkKnight(from, to) {
+  player = 0;
+  if (document.getElementById(from).innerHTML=="♞") 
+    player = 1;
+  if (document.getElementById(from).innerHTML=="♘") 
+    player = -1;
+
+  if(player == 0) return false;
+  console.log(player);
+
+  //check if move is an 2 by 1 move in each direction with a for loop
+  delta = sub(getXY(to), getXY(from));
+  console.log("Knight delta: "+delta);
+  for(var i = 0; i < 2; i++)
+    for(var j = 0; j < 2; j++)
+    {
+      if(i==0) k=1;
+      else k=-1;
+      if(j==0) l=1;
+      else l=-1;
+      console.log([(k*-1)*2, (l*-1)*1]);
+      if(comp(delta, [(k*-1)*2, (l*-1)*1]) )
+        if(isEmpty(to) || isEnemy(from, to))
+          return true;
+      if(comp(delta, [(k*-1)*1, (l*-1)*2]) )
+        if(isEmpty(to) || isEnemy(from, to))
+          return true;
+     }
+     return false;
+}
+
+
 function getXY(place) {
   y = place.substring(1,2);
   x = place.substring(2,3);
@@ -48,3 +84,13 @@ function isEnemy(from, to) {
       
   return false;      
 }
+
+function isEmpty(to) {
+  target = document.getElementById(to).innerHTML;
+
+  if(target == "♕" || target == "♔" || target == "♗" || target == "♘" || target == "♖" || target == "♙" ||
+     target == "♛" || target == "♚" || target == "♝" || target == "♞" || target == "♜" || target == "♟" ) 
+    return false;
+  return true;
+}
+

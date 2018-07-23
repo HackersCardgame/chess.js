@@ -27,8 +27,8 @@ function colorizeHtml() {
   console.log("colorizeHtml()");
   for (var i = 0; i<8; i++) {
     for (var j = 0; j<8; j++) {
-      if((i+j)%2==0) document.getElementById(fields[i][j]).style.backgroundColor = "lightgray";
-      else document.getElementById(fields[i][j]).style.backgroundColor = "gray";
+      if((i+j)%2==0) document.getElementById(fields[i][j]).style.backgroundColor = "blanchedalmond";
+      else document.getElementById(fields[i][j]).style.backgroundColor = "chocolate";
     }
   }
 }
@@ -42,6 +42,7 @@ function registerMouselistener() {
       document.getElementById(fields[i][j]).onclick = function( event ) {
         console.log(event.target.id);
         if (firstSelected=="") {
+          if (document.getElementById(event.target.id).innerHTML=="") return;
           document.getElementById(event.target.id).className="selected";
           firstSelected=event.target.id;
         }
