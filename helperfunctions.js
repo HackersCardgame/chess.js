@@ -40,14 +40,20 @@ function registerMouselistener() {
   for (var i = 0; i<8; i++) {
     for (var j = 0; j<8; j++) {
       document.getElementById(fields[i][j]).onclick = function( event ) {
-        //alert(event.target.id);
+        console.log(event.target.id);
         if (firstSelected=="") {
           document.getElementById(event.target.id).className="selected";
           firstSelected=event.target.id;
         }
         else {
+          if(check(firstSelected, event.target.id)==false) {
+            document.getElementById(firstSelected).className="";
+            firstSelected="";
+            return false;
+          }
           document.getElementById(firstSelected).className="";
-          //alert(document.getElementById(firstSelected).innerHTML);
+          console.log(document.getElementById(firstSelected).innerHTML);
+          console.log(getXY(firstSelected) + " => " + getXY(event.target.id) + ": " + sub(getXY(event.target.id), getXY(firstSelected)) );
           document.getElementById(event.target.id).innerHTML = document.getElementById(firstSelected).innerHTML;
           document.getElementById(firstSelected).innerHTML="";
           firstSelected="";
@@ -118,5 +124,32 @@ function possibleMoves(localBoard)
       if(localBoard[i][j]==0)
         moves.push([i,j]);
   return moves;
+}
+
+function sub(a, b) {
+  var x = a.map(function(item, index) {
+    // In this case item correspond to currentValue of array a, 
+    // using index to get value from array b
+    return item - b[index];
+  })
+  return x;
+}
+
+function add(a, b) {
+  var x = a.map(function(item, index) {
+    // In this case item correspond to currentValue of array a, 
+    // using index to get value from array b
+    return item + b[index];
+  })
+  return x;
+}
+
+function comp(a, b) {
+  var x = a.map(function(item, index) {
+    // In this case item correspond to currentValue of array a, 
+    // using index to get value from array b
+    return (item == b[index]);
+  })
+  return x[0] && x[1];
 }
 
