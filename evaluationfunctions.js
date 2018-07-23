@@ -5,6 +5,8 @@ function check(from, to) {
     if(checkKnight(from, to)) return true;
 
     if(checkBishop(from, to)) return true;
+    
+    if(checkRook(from, to)) return true;
 
   return false;
 }
@@ -105,6 +107,59 @@ function checkBishop(from, to) {
 
 }
 
+function checkRook(from, to) {
+  player = 0;
+  if (document.getElementById(from).innerHTML=="♜") 
+    player = 1;
+  if (document.getElementById(from).innerHTML=="♖") 
+    player = -1;
+
+  if(player == 0) return false;
+
+  //check if move is straight
+  delta = sub(getXY(to), getXY(from));
+
+  if (delta[0]==0)
+    for(var i=1; i<Math.abs(delta[1])+1; i++)
+    {
+      field = "f"+(getXY(from)[1]+i*Math.sign(delta[1]))+(getXY(from)[0]);
+
+      if(!isEmpty(field))
+      {
+        console.log("i: "+i+" delta: "+delta[1]);
+        if (i==Math.abs(delta[1]) && isEnemy(from, to))
+          return true;
+        return false;
+      }
+    }
+
+
+  if (delta[1]==0)
+    for(var i=1; i<Math.abs(delta[0])+1; i++)
+    {
+      field = "f"+(getXY(from)[1])+(getXY(from)[0]+i*Math.sign(delta[0]));
+      
+      console.log("TOWER: "+field + " returns: "+isEmpty(field));
+      if(!isEmpty(field))
+      {
+        console.log("i: "+i+" delta: "+delta[0]);
+        if (i==Math.abs(delta[0]) && isEnemy(from, to))
+          return true;
+        console.log("return from not empty");
+        return false;
+      }
+    }
+
+  if (delta[0]==0 || delta[1]==0)
+    return true;
+
+
+
+  return false;
+  
+}
+
+
 
 function getXY(place) {
   y = parseInt(place.substring(1,2));
@@ -113,6 +168,7 @@ function getXY(place) {
 }
 
 function isEnemy(from, to) {
+  console.log("IS ENEMY "+to);
   me = document.getElementById(from).innerHTML;
   he = document.getElementById(to).innerHTML;
   if(me == "♕" || me == "♔" || me == "♗" || me == "♘" || me == "♖" || me == "♙")
@@ -127,7 +183,7 @@ function isEnemy(from, to) {
 }
 
 function isEmpty(to) {
-  console.log(to);
+  //console.log(to);
   target = document.getElementById(to).innerHTML;
 
   if(target == "♕" || target == "♔" || target == "♗" || target == "♘" || target == "♖" || target == "♙" ||
