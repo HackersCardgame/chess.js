@@ -19,24 +19,24 @@ function check(from, to) {
 
 function checkPawn(from, to) {
   player = 0;
-  if (document.getElementById(from).innerHTML=="♟") 
+  if (myboard[from[0]][from[1]]=="♟") 
     player = 1;
-  if (document.getElementById(from).innerHTML=="♙") 
+  if (myboard[from[0]][from[1]]=="♙") 
     player = -1;
   
   if(player == 0) return false;
 
     //check single move
-    delta = sub(getXY(to), getXY(from));
-    if(comp(delta, [0, 1*player]) && !isEnemy(from,to)) return true;
-
+    delta = sub(to, from);
+    if(comp(delta, [1*player, 0]) && !isEnemy(from,to)) return true;
+    1
     //check double start move
-    if(comp(delta, [0, 2*player]) && (getXY(from)[1]==1 ||getXY(from)[1]==6)) 
+    if(comp(delta, [2*player, 0]) && (from[0]==1 ||from[0]==6)) 
       if(!isEnemy(from, to))
         return true;
     
     //check diagonal 1 when attacking enemy
-    if( ( comp(delta, [1*player, 1*player]) && isEnemy(from, to) ) || ( comp(delta, [-1*player, 1*player]) && isEnemy(from, to) ) ) return true;
+    if( ( comp(delta, [1*player, 1*player]) && isEnemy(from, to) ) || ( comp(delta, [1*player, -1*player]) && isEnemy(from, to) ) ) return true;
 
     return false;
 
@@ -45,16 +45,17 @@ function checkPawn(from, to) {
 
 function checkKnight(from, to) {
   player = 0;
-  if (document.getElementById(from).innerHTML=="♞") 
+  if (myboard[from[0]][from[1]]=="♞") 
     player = 1;
-  if (document.getElementById(from).innerHTML=="♘") 
+  if (myboard[from[0]][from[1]]=="♘") 
     player = -1;
 
   if(player == 0) return false;
 
 
   //check if move is an 2 by 1 move in each direction with a for loop
-  delta = sub(getXY(to), getXY(from));
+  delta = sub(to, from);
+  console.log("DELT:" +delta);
 
   for(var i = 0; i < 2; i++)
     for(var j = 0; j < 2; j++)
@@ -76,9 +77,9 @@ function checkKnight(from, to) {
 
 function checkBishop(from, to) {
   player = 0;
-  if (document.getElementById(from).innerHTML=="♝") 
+  if (myboard[from[0]][from[1]]=="♝") 
     player = 1;
-  if (document.getElementById(from).innerHTML=="♗") 
+  if (myboard[from[0]][from[1]]=="♗") 
     player = -1;
 
   if(player == 0) return false;
@@ -90,7 +91,7 @@ function checkBishop(from, to) {
 function checkDiagonal(from, to) {
 
   //check if move is diagonal
-  delta = sub(getXY(to), getXY(from));
+  delta = sub(to, from);
 
   if(Math.abs(delta[0])!=Math.abs(delta[1])) return false;  //TODO: without this line there is still a bug, why?
   
@@ -103,13 +104,12 @@ function checkDiagonal(from, to) {
 
   for(var i=1; i<delta[0]+1; i++)
   {
-    step[1] = getXY(from)[0]+(direction[0]*scalar([1 ,1], i)[0]);
-    step[0] = getXY(from)[1]+(direction[1]*scalar([1 ,1], i)[1]);
-    if(!isEmpty("f"+step[0]+step[1]))
+    step[0] = from[0]+(direction[0]*scalar([1 ,1], i)[0]);
+    step[1] = from[1]+(direction[1]*scalar([1 ,1], i)[1]);
+    if(!isEmpty(step))
     {
       if(i==delta[0] && isEnemy(from, to))
         return true;
-
       return false;
     }
     if(comp(delta, scalar([1, 1], i)))
@@ -122,9 +122,9 @@ function checkDiagonal(from, to) {
 
 function checkRook(from, to) {
   player = 0;
-  if (document.getElementById(from).innerHTML=="♜") 
+  if (myboard[from[0]][from[1]]=="♜") 
     player = 1;
-  if (document.getElementById(from).innerHTML=="♖") 
+  if (myboard[from[0]][from[1]]=="♖") 
     player = -1;
 
   if(player == 0) return false;
@@ -135,15 +135,17 @@ function checkRook(from, to) {
 
 function checkStraight(from, to) {
   //check if move is straight
-  delta = sub(getXY(to), getXY(from));
+  delta = sub(to, from);
 
-  if(from==to) return false;
+  if(from[0]==to[0]&&from[1]==to[1]) return false;  //TODO: überall anders auch einbauen oder hier rausnehmen und debuggen
 
   //check if there are any obstacles vertically
   if (delta[0]==0)
     for(var i=1; i<Math.abs(delta[1])+1; i++)
     {
-      field = "f"+(getXY(from)[1]+i*Math.sign(delta[1]))+(getXY(from)[0]);
+      field = [];
+      field[0] = from[0];
+      field[1] = from[1]+i*Math.sign(delta[1]);
 
       if(!isEmpty(field))
       {
@@ -158,7 +160,9 @@ function checkStraight(from, to) {
   if (delta[1]==0)
     for(var i=1; i<Math.abs(delta[0])+1; i++)
     {
-      field = "f"+(getXY(from)[1])+(getXY(from)[0]+i*Math.sign(delta[0]));
+      field = [];
+      field[0] = from[0]+i*Math.sign(delta[0]);
+      field[1] = from[1];
 
       if(!isEmpty(field))
       {
@@ -181,9 +185,9 @@ function checkStraight(from, to) {
 
 function checkQueen(from, to) {
   player = 0;
-  if (document.getElementById(from).innerHTML=="♛") 
+  if (myboard[from[0]][from[1]]=="♛") 
     player = 1;
-  if (document.getElementById(from).innerHTML=="♕") 
+  if (myboard[from[0]][from[1]]=="♕") 
     player = -1;
 
   if(player == 0) return false;
@@ -197,16 +201,16 @@ whiteKingMoved=false;
 //TODO: Rochade programmieren: https://de.wikipedia.org/wiki/Rochade
 function checkKing(from, to) {
   player = 0;
-  if (document.getElementById(from).innerHTML=="♚") 
+  if (myboard[from[0]][from[1]]=="♚") 
     player = 1;
-  if (document.getElementById(from).innerHTML=="♔") 
+  if (myboard[from[0]][from[1]]=="♔") 
     player = -1;
 
   if(player == 0) return false;
 
-  delta = sub(getXY(to), getXY(from));
+  delta = sub(to, from);
   
-  
+  //TODO: rochade und ersten zug einbauen
   if(Math.abs(delta[0])>1 || Math.abs(delta[1])>1)
   {
     return false;
@@ -216,16 +220,9 @@ function checkKing(from, to) {
 }
 
 
-
-function getXY(place) {
-  y = parseInt(place.substring(1,2));
-  x = parseInt(place.substring(2,3));
-  return [x, y]
-}
-
 function isEnemy(from, to) {
-  me = document.getElementById(from).innerHTML;
-  he = document.getElementById(to).innerHTML;
+  me = myboard[from[0]][from[1]];
+  he = myboard[to[0]][to[1]];
   if(me == "♕" || me == "♔" || me == "♗" || me == "♘" || me == "♖" || me == "♙")
     if(he == "♛" || he == "♚" || he == "♝" || he == "♞" || he == "♜" || he == "♟")
       return true;
@@ -239,7 +236,7 @@ function isEnemy(from, to) {
 
 function isEmpty(to) {
   //console.log(to);
-  target = document.getElementById(to).innerHTML;
+  target = myboard[to[0]][to[1]];
 
   if(target == "♕" || target == "♔" || target == "♗" || target == "♘" || target == "♖" || target == "♙" ||
      target == "♛" || target == "♚" || target == "♝" || target == "♞" || target == "♜" || target == "♟" ) 

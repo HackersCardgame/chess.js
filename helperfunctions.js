@@ -21,6 +21,14 @@ function colorizeHtml() {
   }
 }
 
+function getFieldCoord(description)
+{
+  for(var i=0; i<8; i++)
+    for(var j=0; j<8; j++)
+      if(fields[i][j] == description)
+       return [i, j];
+}
+
 firstSelected = "";
 
 //register mouselistener to fields
@@ -32,20 +40,21 @@ function registerMouselistener() {
         if (firstSelected=="") {
           if (document.getElementById(event.target.id).innerHTML=="") return;
           document.getElementById(event.target.id).className="selected";
-          firstSelected=event.target.id;
+          firstSelected=getFieldCoord(event.target.id);
         }
         else {
-          if(check(firstSelected, event.target.id)==false) {
-            document.getElementById(firstSelected).className="";
+          if(check(firstSelected, getFieldCoord(event.target.id))==false) {
+            document.getElementById(fields[firstSelected[0]][firstSelected[1]]).className="";
             firstSelected="";
             return false;
           }
-          document.getElementById(firstSelected).className="";
-          console.log(document.getElementById(firstSelected).innerHTML);
-          console.log(getXY(firstSelected) + " => " + getXY(event.target.id) + ": " + sub(getXY(event.target.id), getXY(firstSelected)) );
-          document.getElementById(event.target.id).innerHTML = document.getElementById(firstSelected).innerHTML;
-          document.getElementById(firstSelected).innerHTML="";
+          document.getElementById(fields[firstSelected[0]][firstSelected[1]]).className="";
+          console.log(document.getElementById(fields[firstSelected[0]][firstSelected[1]]).innerHTML);
+          console.log(firstSelected + " => " + getFieldCoord(event.target.id) + ": " + sub(getFieldCoord(event.target.id), firstSelected) );
+          document.getElementById(event.target.id).innerHTML = document.getElementById(fields[firstSelected[0]][firstSelected[1]]).innerHTML;
+          document.getElementById(fields[firstSelected[0]][firstSelected[1]]).innerHTML="";
           firstSelected="";
+          getBoard();
         }
       }
     }
@@ -58,6 +67,8 @@ function getBoard() {
   for(var i = 0; i < 8; i++)
     for(var j = 0; j < 8; j++)
       myboard[i][j] = document.getElementById("f"+i+j).innerHTML;
+      
+ //console.log(myboard);
 }
 
 

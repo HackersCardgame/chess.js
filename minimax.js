@@ -12,7 +12,9 @@ function computerMove() {
   getBoard();
   console.log(myboard);
   console.log(possibleMoves());
-  console.log(minimax(5, -1, false));
+  nextMove = minimax(4, -1, false);
+  document.getElementById(nextMove[1]).innerHTML = document.getElementById(nextMove[0]).innerHTML;
+  document.getElementById(nextMove[0]).innerHTML = ""; 
 }
 
 
