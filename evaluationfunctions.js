@@ -119,6 +119,7 @@ function checkRook(from, to) {
   //check if move is straight
   delta = sub(getXY(to), getXY(from));
 
+  //check if there are any obstacles vertically
   if (delta[0]==0)
     for(var i=1; i<Math.abs(delta[1])+1; i++)
     {
@@ -126,7 +127,6 @@ function checkRook(from, to) {
 
       if(!isEmpty(field))
       {
-        console.log("i: "+i+" delta: "+delta[1]);
         if (i==Math.abs(delta[1]) && isEnemy(from, to))
           return true;
         return false;
@@ -134,22 +134,21 @@ function checkRook(from, to) {
     }
 
 
+  //check if there are any obstacles horizontaly
   if (delta[1]==0)
     for(var i=1; i<Math.abs(delta[0])+1; i++)
     {
       field = "f"+(getXY(from)[1])+(getXY(from)[0]+i*Math.sign(delta[0]));
-      
-      console.log("TOWER: "+field + " returns: "+isEmpty(field));
+
       if(!isEmpty(field))
       {
-        console.log("i: "+i+" delta: "+delta[0]);
         if (i==Math.abs(delta[0]) && isEnemy(from, to))
           return true;
-        console.log("return from not empty");
         return false;
       }
     }
 
+  //if there is noting between start and endpoint and we move only straight we return true
   if (delta[0]==0 || delta[1]==0)
     return true;
 
