@@ -9,6 +9,8 @@ function check(from, to) {
     if(checkRook(from, to)) return true;
     
     if(checkQueen(from, to)) return true;
+    
+    if(checkKing(from, to)) return true;
 
   return false;
 }
@@ -183,6 +185,31 @@ function checkQueen(from, to) {
   return checkDiagonal(from, to) || checkStraight(from, to);
 }
 
+blackKingMoved=false;
+whiteKingMoved=false;
+
+//TODO: Rochade programmieren: https://de.wikipedia.org/wiki/Rochade
+function checkKing(from, to) {
+  player = 0;
+  if (document.getElementById(from).innerHTML=="♚") 
+    player = 1;
+  if (document.getElementById(from).innerHTML=="♔") 
+    player = -1;
+
+  if(player == 0) return false;
+
+  delta = sub(getXY(to), getXY(from));
+  
+  
+  if(Math.abs(delta[0])>1 || Math.abs(delta[1])>1)
+  {
+    console.log("more than 1 field");
+    return false;
+  }
+    
+  return checkDiagonal(from, to) || checkStraight(from, to);
+}
+
 
 
 function getXY(place) {
@@ -192,7 +219,6 @@ function getXY(place) {
 }
 
 function isEnemy(from, to) {
-  console.log("IS ENEMY "+to);
   me = document.getElementById(from).innerHTML;
   he = document.getElementById(to).innerHTML;
   if(me == "♕" || me == "♔" || me == "♗" || me == "♘" || me == "♖" || me == "♙")
