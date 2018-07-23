@@ -1,5 +1,6 @@
 
 function check(from, to) {
+    //console.log("CHECK: "+from+" => "+to);
     if(checkPawn(from, to)) return true;
 
     if(checkKnight(from, to)) return true;
@@ -60,7 +61,7 @@ function checkKnight(from, to) {
       else k=-1;
       if(j==0) l=1;
       else l=-1;
-      console.log([(k*-1)*2, (l*-1)*1]);
+      //console.log([(k*-1)*2, (l*-1)*1]);
       if(comp(delta, [(k*-1)*2, (l*-1)*1]) )
         if(isEmpty(to) || isEnemy(from, to))
           return true;
@@ -85,8 +86,12 @@ function checkBishop(from, to) {
 
 
 function checkDiagonal(from, to) {
+
   //check if move is diagonal
   delta = sub(getXY(to), getXY(from));
+
+  if(Math.abs(delta[0])!=Math.abs(delta[1])) return false;  //TODO: without this line there is still a bug, why?
+  
   var direction = [0, 0];
   var step = [0, 0];
   direction[0] = Math.sign(delta[0]);
@@ -102,12 +107,9 @@ function checkDiagonal(from, to) {
     {
       if(i==delta[0] && isEnemy(from, to))
         return true;
-      console.log("return for non-empty");
+
       return false;
     }
-    console.log(comp(delta, scalar([1, 1], i)));
-    console.log(delta);
-    console.log(scalar([1, 1], i));
     if(comp(delta, scalar([1, 1], i)))
       return true;
   }
@@ -132,6 +134,8 @@ function checkRook(from, to) {
 function checkStraight(from, to) {
   //check if move is straight
   delta = sub(getXY(to), getXY(from));
+
+  if(from==to) return false;
 
   //check if there are any obstacles vertically
   if (delta[0]==0)
@@ -203,7 +207,6 @@ function checkKing(from, to) {
   
   if(Math.abs(delta[0])>1 || Math.abs(delta[1])>1)
   {
-    console.log("more than 1 field");
     return false;
   }
     

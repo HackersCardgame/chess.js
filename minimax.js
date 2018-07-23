@@ -1,8 +1,79 @@
-var myboard = [ [ 0,  0,  0 ],
-                [ 0,  0,  0 ],
-                [ 0,  0,  0 ] ];
+    myboard = [ [0,0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0,0] ];
 
-var debug=false;
+function computerMove() {
+  console.log("Computer Move");
+  getBoard();
+  console.log(myboard);
+  console.log(possibleMoves());
+  console.log("VALUE: "+evaluateBoard());
+}
+
+
+//get list of possible moves
+function possibleMoves()
+{
+  oldFigure="";
+  valueBevore = evaluateBoard();
+  var moves=[];
+  for(var i = 0; i < 8; i++)
+    for(var j = 0; j < 8; j++)
+      if (isBlack(myboard[i][j]))
+        for(var k = 0; k < 8; k ++)
+          for(var l = 0; l < 8; l++)
+          {
+            //console.log("f"+i+j+" => "+"f"+k+l+ ": "+ check("f"+i+j, "f"+k+l));
+            //console.log("counters: "+i+" "+j+" "+k+" "+l);
+            if( check("f"+i+j, "f"+k+l) )
+            {
+              oldFigure = myboard[k][l];
+              myboard[k][l] = myboard[i][j];
+              difference = valueBevore - evaluateBoard();
+              moves.push(["f"+i+j, "f"+k+l, difference]);              
+            }
+          }
+  return moves;
+}
+
+//white = maximizing  // black = minimizing
+function evaluateBoard() {
+  points=0;
+  for(var i = 0; i < 8; i++)
+    for(var j = 0; j < 8; j++)
+      points+=countField(i, j);
+  return points;
+}
+
+function countField(i, j)
+{
+  // ["♕", "♔", "♗", "♘", "♖", "♙"]
+  // ["♛", "♚", "♝", "♞", "♜", "♟"]
+
+  switch (myboard[i][j]) {
+    case "♔": return 1000;   //white maximizing
+    case "♕": return   50;
+    case "♖": return   30;
+    case "♗": return   20;
+    case "♘": return   15;
+    case "♙": return    5;
+    
+    case "♚": return -1000;  //black minimizing
+    case "♛": return   -50;
+    case "♜": return   -30;
+    case "♝": return   -20;
+    case "♞": return   -15;
+    case "♟": return    -5;
+    }
+    return 0;
+}
+
+
 //minmax algorithm that does the game
 function minimax(depth, player, init)
 {
