@@ -15,30 +15,38 @@ function moveWhite() {
   if(!bothKingExists()) return;
   var depth = parseInt(document.getElementById("depth").value);
   var nextMove = minimax(depth, 1, true);
-  if(isCheck(1, nextMove)) console.log("White CHECK");
+  if(nextMove[0][0]+nextMove[0][1]+nextMove[1][0]+nextMove[1][1] == 0) alert("CHECKMATE");
+  
+  //move logging
   document.getElementById("output").innerHTML+="White: " + getFigure(nextMove) + " " + nextMove[0] + " => " + nextMove[1] + "<br>";
-  document.getElementById("f"+nextMove[1][0]+nextMove[1][1]).innerHTML = document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).innerHTML;
-  document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).innerHTML = "";
+  
+  myboard[nextMove[1][0]][nextMove[1][1]]=myboard[nextMove[0][0]][nextMove[0][1]];
+  myboard[nextMove[0][0]][nextMove[0][1]]=""
+   
+  drawBoard();
   document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).className="selected";
   document.getElementById("f"+nextMove[1][0]+nextMove[1][1]).className="selected";
   setTimeout(function(){  resetBoard();  document.getElementById("calc").className=""; }, 2000);
-  getBoard();
+  if(isInCheck(-1)) alert("CHECK"); 
 }
 
 function moveBlack() {
   if(!bothKingExists()) return;
   var depth = parseInt(document.getElementById("depth").value);
   var nextMove = minimax(depth, -1, true);
-  if(isCheck(1, nextMove)) console.log("Black CHECK");
-  console.log();
   if(nextMove[0][0]+nextMove[0][1]+nextMove[1][0]+nextMove[1][1] == 0) alert("CHECKMATE");
+  
+  //move logging
   document.getElementById("output").innerHTML+="Black: " + getFigure(nextMove) + " " +nextMove[0] + " => " + nextMove[1] + "<br>";
-  document.getElementById("f"+nextMove[1][0]+nextMove[1][1]).innerHTML = document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).innerHTML;
-  document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).innerHTML = "";
+
+  myboard[nextMove[1][0]][nextMove[1][1]]=myboard[nextMove[0][0]][nextMove[0][1]];
+  myboard[nextMove[0][0]][nextMove[0][1]]=""
+   
+  drawBoard();
   document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).className="selected";
   document.getElementById("f"+nextMove[1][0]+nextMove[1][1]).className="selected";
   setTimeout(function(){  resetBoard(); document.getElementById("calc").className=""; }, 3000);
-  getBoard();
+  if(isInCheck(1)) alert("CHECK");
 }
 
 function bothKingExists() {
