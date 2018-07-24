@@ -16,6 +16,11 @@ function computerMove() {
   nextMove = minimax(4, -1, true);
   document.getElementById("f"+nextMove[1][0]+nextMove[1][1]).innerHTML = document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).innerHTML;
   document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).innerHTML = "";
+  document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).className="selected";
+  document.getElementById("f"+nextMove[1][0]+nextMove[1][1]).className="selected";
+  setTimeout(function(){ 
+                          document.getElementById("f"+nextMove[1][0]+nextMove[1][1]).className="";
+                          document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).className=""; }, 3000);
   getBoard(); 
 }
 

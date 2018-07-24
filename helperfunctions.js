@@ -55,6 +55,8 @@ function registerMouselistener() {
           document.getElementById(fields[firstSelected[0]][firstSelected[1]]).innerHTML="";
           firstSelected="";
           getBoard();
+            setTimeout(function(){ computerMove(); }, 1000);
+          
         }
       }
     }
