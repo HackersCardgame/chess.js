@@ -65,7 +65,7 @@ function registerMouselistener() {
         }
         else {
           secondSelected=getFieldCoord(event.target.id);
-          if(checking(firstSelected, secondSelected, true)==false) {
+          if(checking(firstSelected, secondSelected, true, 1)==false) {
             document.getElementById(fields[firstSelected[0]][firstSelected[1]]).className="";
             firstSelected="";
             return false;

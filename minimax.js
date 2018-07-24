@@ -15,6 +15,7 @@ function moveWhite() {
   if(!bothKingExists()) return;
   var depth = parseInt(document.getElementById("depth").value);
   var nextMove = minimax(depth, 1, true);
+  if(isCheck(1, nextMove)) console.log("White CHECK");
   document.getElementById("output").innerHTML+="White: " + getFigure(nextMove) + " " + nextMove[0] + " => " + nextMove[1] + "<br>";
   document.getElementById("f"+nextMove[1][0]+nextMove[1][1]).innerHTML = document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).innerHTML;
   document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).innerHTML = "";
@@ -28,6 +29,7 @@ function moveBlack() {
   if(!bothKingExists()) return;
   var depth = parseInt(document.getElementById("depth").value);
   var nextMove = minimax(depth, -1, true);
+  if(isCheck(1, nextMove)) console.log("Black CHECK");
   document.getElementById("output").innerHTML+="Black: " + getFigure(nextMove) + " " +nextMove[0] + " => " + nextMove[1] + "<br>";
   document.getElementById("f"+nextMove[1][0]+nextMove[1][1]).innerHTML = document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).innerHTML;
   document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).innerHTML = "";
@@ -68,7 +70,7 @@ function possibleMoves(player)
           for(var k = 0; k < 8; k ++)
             for(var l = 0; l < 8; l++)
             {
-              if( checking( [i,j], [k, l], false ) )
+              if( checking( [i,j], [k, l], false, player ) )
               {
                 moves.push([[i, j], [k, l]]);
               }
@@ -81,7 +83,7 @@ function possibleMoves(player)
           for(var k = 0; k < 8; k ++)
             for(var l = 0; l < 8; l++)
             {
-              if( checking( [i,j], [k, l], false ) )
+              if( checking( [i,j], [k, l], false, player ) )
               {
                 moves.push([[i, j], [k, l]]);
               }
@@ -160,36 +162,55 @@ function minimax(depth, player, init)
 
   var moves = shuffle(possibleMoves(player));
 
-    var bestValue=-1000000*player;
-    for(var i = 0; i < moves.length; i++)
+  var bestValue=-1000000*player;
+  for(var i = 0; i < moves.length; i++)
+  {
+    FROM = 0; TO = 1; X = 0; Y = 1;
+
+
+
+    //Make the move
+    var rollback = myboard[moves[i][TO][X]][moves[i][TO][Y]];
+    myboard[moves[i][TO][X]][moves[i][TO][Y]] = myboard[moves[i][FROM][X]][moves[i][FROM][Y]];
+    myboard[moves[i][FROM][X]][moves[i][FROM][Y]] = "";
+
+    if(init)
     {
-        FROM = 0; TO = 1; X = 0; Y = 1;
-
-        //Make the move
-        var rollback = myboard[moves[i][TO][X]][moves[i][TO][Y]];
-        myboard[moves[i][TO][X]][moves[i][TO][Y]] = myboard[moves[i][FROM][X]][moves[i][FROM][Y]];
-        myboard[moves[i][FROM][X]][moves[i][FROM][Y]] = "";
-
-        var value = minimax(depth-1, -1*player, false);
-        
-        if(player==1)        
-        if(value>bestValue)
-        {
-          bestValue = value;
-          bestMove = moves[i];
-        }
-        
-        if(player==-1)
-        if(value<bestValue)
-        {
-          bestValue = value;
-          bestMove = moves[i];
-        }
-
+      console.log(i);
+      if(isInCheck(player))
+      {
+        console.log(i);
         //Revert the move
         myboard[moves[i][FROM][X]][moves[i][FROM][Y]] = myboard[moves[i][TO][X]][moves[i][TO][Y]];
         myboard[moves[i][TO][X]][moves[i][TO][Y]] = rollback;
+        console.log(moves[i]);
+        continue;    
+      }
     }
+
+    var value = minimax(depth-1, -1*player, false);
+
+
+    if(player==1)        
+    if(value>bestValue)
+    {
+
+      bestValue = value;
+      bestMove = moves[i];
+    }
+        
+    if(player==-1)
+    if(value<bestValue)
+    {
+
+      bestValue = value;
+      bestMove = moves[i];
+    }
+
+    //Revert the move
+    myboard[moves[i][FROM][X]][moves[i][FROM][Y]] = myboard[moves[i][TO][X]][moves[i][TO][Y]];
+    myboard[moves[i][TO][X]][moves[i][TO][Y]] = rollback;
+  }
 
   //we return the points except the first move we return the move to play    
   if (init) return bestMove;

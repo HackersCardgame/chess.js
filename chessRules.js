@@ -6,8 +6,9 @@ var blackT2Moved=false;
 var whiteT1Moved=false;
 var whiteT2Moved=false;
 
-function checking(from, to, realMove) {
+function checking(from, to, realMove, player) {
     if(from[0]==to[0]&&from[1]==to[1]) return false;
+    
 
     if(checkPawn(from, to)) return true;
 
@@ -43,6 +44,10 @@ function checking(from, to, realMove) {
     
     if(checkKing(from, to, realMove))
     {
+      if(realMove)
+        if(isCheck(player, [from, to]))
+          return false;
+
       if(comp(from, [7,4]))
         if (realMove) whiteKingMoved=true;
 
@@ -278,7 +283,6 @@ function checkKing(from, to, realMove) {
         return true;
       }
 
-
   delta = sub(to, from);
   
   //TODO: rochade und ersten zug einbauen
@@ -291,4 +295,60 @@ function checkKing(from, to, realMove) {
 }
 
 
+function isCheck(player, tempMove) {
+  FROM = 0; TO = 1; X = 0; Y = 1;
 
+  var rollbacktemp = myboard[tempMove[TO][X]][tempMove[TO][Y]];
+  myboard[tempMove[TO][X]][tempMove[TO][Y]]=myboard[tempMove[FROM][X]][tempMove[FROM][Y]];
+  myboard[tempMove[FROM][X]][tempMove[FROM][Y]]="";
+    
+  currentPoints = evaluateBoard();
+  var moves = possibleMoves(-player);
+  
+  for(var i = 0; i<moves.length; i++)
+  {
+
+
+
+    //Make the move
+    var rollback = myboard[moves[i][TO][X]][moves[i][TO][Y]];
+    myboard[moves[i][TO][X]][moves[i][TO][Y]] = myboard[moves[i][FROM][X]][moves[i][FROM][Y]];
+    myboard[moves[i][FROM][X]][moves[i][FROM][Y]] = "";
+    
+    newPoints = evaluateBoard();
+    difference = currentPoints-newPoints;
+    if(difference==(player*100))
+    {
+      console.log("IS CHECK");
+      return true;
+    }
+    //Revert the move
+    myboard[moves[i][FROM][X]][moves[i][FROM][Y]] = myboard[moves[i][TO][X]][moves[i][TO][Y]];
+    myboard[moves[i][TO][X]][moves[i][TO][Y]] = rollback;
+ 
+   }
+   
+  //Revert the Tempmove
+  myboard[tempMove[FROM][X]][tempMove[FROM][Y]] = myboard[tempMove[TO][X]][tempMove[TO][Y]];
+  myboard[tempMove[TO][X]][tempMove[TO][Y]] = rollbacktemp;
+
+  return false;
+}
+
+function isInCheck(player) {
+  FROM = 0; TO = 1; X = 0; Y = 1;
+
+  var moves = possibleMoves(-player);
+  
+  for(var i=0; i<moves.length; i++)
+  {
+    if(player=-1)
+      if(myboard[moves[i][TO][X]][moves[i][TO][Y]]=="♚")
+        return true;
+      
+    if(player=1)
+      if(myboard[moves[i][TO][X]][moves[i][TO][Y]]=="♔")
+        return true;
+  }
+  return false;
+}
