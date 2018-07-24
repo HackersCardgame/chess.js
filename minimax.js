@@ -12,9 +12,18 @@ var myboard = [ [0,0,0,0,0,0,0,0],
 var valueBefore = 0;
 
 function moveWhite() {
+  move(1);
+}
+
+function moveBlack() {
+  move(-1);
+}
+
+
+function move(player) {
   if(!bothKingExists()) return;
   var depth = parseInt(document.getElementById("depth").value);
-  var nextMove = minimax(depth, 1, true);
+  var nextMove = minimax(depth, player, true);
   if(nextMove[0][0]+nextMove[0][1]+nextMove[1][0]+nextMove[1][1] == 0) alert("CHECKMATE");
   
   //move logging
@@ -27,27 +36,15 @@ function moveWhite() {
   document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).className="selected";
   document.getElementById("f"+nextMove[1][0]+nextMove[1][1]).className="selected";
   setTimeout(function(){  resetBoard();  document.getElementById("calc").className=""; }, 2000);
-  if(isInCheck(-1)) alert("CHECK"); 
+  if(isInCheck(-player))
+  {
+    var nextMove = minimax(depth, -player, true);
+      if(nextMove[0][0]+nextMove[0][1]+nextMove[1][0]+nextMove[1][1] == 0) alert("CHECKMATE");
+  }
+  else
+    alert("CHECK");
 }
 
-function moveBlack() {
-  if(!bothKingExists()) return;
-  var depth = parseInt(document.getElementById("depth").value);
-  var nextMove = minimax(depth, -1, true);
-  if(nextMove[0][0]+nextMove[0][1]+nextMove[1][0]+nextMove[1][1] == 0) alert("CHECKMATE");
-  
-  //move logging
-  document.getElementById("output").innerHTML+="Black: " + getFigure(nextMove) + " " +nextMove[0] + " => " + nextMove[1] + "<br>";
-
-  myboard[nextMove[1][0]][nextMove[1][1]]=myboard[nextMove[0][0]][nextMove[0][1]];
-  myboard[nextMove[0][0]][nextMove[0][1]]=""
-   
-  drawBoard();
-  document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).className="selected";
-  document.getElementById("f"+nextMove[1][0]+nextMove[1][1]).className="selected";
-  setTimeout(function(){  resetBoard(); document.getElementById("calc").className=""; }, 3000);
-  if(isInCheck(1)) alert("CHECK");
-}
 
 function bothKingExists() {
   var numKings = 0;
