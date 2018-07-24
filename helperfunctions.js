@@ -51,10 +51,12 @@ var firstSelected = "";
 
 //register mouselistener to fields
 function registerMouselistener() {
+
   for (var i = 0; i<8; i++) {
     for (var j = 0; j<8; j++) {
       document.getElementById(fields[i][j]).onclick = function( event ) {
-        console.log(event.target.id);
+        getBoard();
+        if(!bothKingExists()) return;
         if (firstSelected=="") {
           if (document.getElementById(event.target.id).innerHTML=="") return;
           document.getElementById(event.target.id).className="selected";
@@ -69,7 +71,7 @@ function registerMouselistener() {
           document.getElementById(fields[firstSelected[0]][firstSelected[1]]).className="";
           document.getElementById(event.target.id).innerHTML = document.getElementById(fields[firstSelected[0]][firstSelected[1]]).innerHTML;
           document.getElementById(fields[firstSelected[0]][firstSelected[1]]).innerHTML="";
-          document.getElementById("output").innerHTML+="White: "+firstSelected +" => " + getFieldCoord(event.target.id)+"<br>" ;
+          document.getElementById("output").innerHTML+="White: " + getFigure([firstSelected, getFieldCoord(event.target.id)]) + " " +firstSelected +" => " + getFieldCoord(event.target.id)+"<br>" ;
           firstSelected="";
           getBoard();
           setTimeout(function(){ moveBlack(); }, 1000);
@@ -87,8 +89,10 @@ function getBoard() {
   for(var i = 0; i < 8; i++)
     for(var j = 0; j < 8; j++)
       myboard[i][j] = document.getElementById("f"+i+j).innerHTML;
-      
- //console.log(myboard);
+}
+
+function getFigure(move) {
+  return myboard[move[0][0]][move[0][1]];
 }
 
 
