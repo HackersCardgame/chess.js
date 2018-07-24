@@ -24,8 +24,9 @@
 <button id=f70>♖</button><button id=f71>♘</button><button id=f72>♗</button><button id=f73>♕</button><button id=f74>♔</button><button id=f75>♗</button><button id=f76>♘</button><button id=f77>♖</button><br>
 <br>    <br>
 <div>
-<button onclick='alert("RESET NOT IMPLEMENTED YET")' style="width:200">Reset</button>
-<button onclick='computerMove()' style="width:200">Move</button>
+
+<button id="calc" onclick='computerMove()' style="width:200">make Move</button>
+<button onclick='exportToURL()' style="width:200">exportToURL()</button>
     <br>
     <p id="output">
     </p>
@@ -37,7 +38,7 @@
 colorizeHtml();
 registerMouselistener();
 getBoard();
-
+importFromURL();
 </script>
 </html>
 

@@ -28,10 +28,10 @@ function checkPawn(from, to) {
 
     //check single move
     delta = sub(to, from);
-    if(comp(delta, [1*player, 0]) && !isEnemy(from,to)) return true;
+    if(comp(delta, [1*player, 0]) && !isEnemy(from,to) && isEmpty(to)) return true;
     1
     //check double start move
-    if(comp(delta, [2*player, 0]) && (from[0]==1 ||from[0]==6)) 
+    if(comp(delta, [2*player, 0]) && isEmpty([from[0]+player,from[1]]) && ((from[0]==1 ||from[0]==6))) 
       if(!isEnemy(from, to))
         return true;
     
