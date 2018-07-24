@@ -1,6 +1,6 @@
 var debug=true;
 
-var  myboard = [ [0,0,0,0,0,0,0,0],
+var myboard = [ [0,0,0,0,0,0,0,0],
                 [0,0,0,0,0,0,0,0],
                 [0,0,0,0,0,0,0,0],
                 [0,0,0,0,0,0,0,0],
@@ -18,6 +18,7 @@ function computerMove() {
   //getBoard();
   valueBefore = evaluateBoard();
   nextMove = minimax(3, -1, true);
+  console.log("MOVING FROM "+nextMove);
   document.getElementById("f"+nextMove[1][0]+nextMove[1][1]).innerHTML = document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).innerHTML;
   document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).innerHTML = "";
   document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).className="selected";
@@ -38,21 +39,37 @@ function resetBoard() {
 
 
 //get list of possible moves
-function possibleMoves()
+function possibleMoves(player)
 {
   oldFigure="";
   var moves=[];
-  for(var i = 0; i < 8; i++)
-    for(var j = 0; j < 8; j++)
-      if (isBlack(myboard[i][j]))
-        for(var k = 0; k < 8; k ++)
-          for(var l = 0; l < 8; l++)
-          {
-            if( check( [i,j], [k, l] ) )
+
+  if(player==1)
+    for(var i = 0; i < 8; i++)
+      for(var j = 0; j < 8; j++)
+        if (isWhite(myboard[i][j]))
+          for(var k = 0; k < 8; k ++)
+            for(var l = 0; l < 8; l++)
             {
-              moves.push([[i, j], [k, l]]);
+              if( check( [i,j], [k, l] ) )
+              {
+                moves.push([[i, j], [k, l]]);
+              }
             }
-          }
+
+  if(player==-1)
+    for(var i = 0; i < 8; i++)
+      for(var j = 0; j < 8; j++)
+        if (isBlack(myboard[i][j]))
+          for(var k = 0; k < 8; k ++)
+            for(var l = 0; l < 8; l++)
+            {
+              if( check( [i,j], [k, l] ) )
+              {
+                moves.push([[i, j], [k, l]]);
+              }
+            }
+
   return moves;
 }
 
@@ -118,15 +135,15 @@ function getRandomInt(max) {
 //minmax algorithm that does the game
 function minimax(depth, player, init)
 {
-  console.log("ENTER Depth: "+depth+" P: "+player + " Parent: "+parent);
+  console.log("ENTER Depth: "+depth+" P: "+player );
   var valueArray = [];
 
   var bestMove = [[0,0],[0,0]];    
 
-  if(depth < 2) return evaluateBoard();
+  if(depth < 1) return evaluateBoard();
 
   console.log("checkpoint");
-  var moves = shuffle(possibleMoves());
+  var moves = shuffle(possibleMoves(player));
 
   console.log(moves);
 
@@ -147,7 +164,7 @@ function minimax(depth, player, init)
         myboard[moves[i][0][0]][moves[i][0][1]] = "";
 
         
-        var value = minimax(depth-1, -1*player, false, handler);
+        var value = minimax(depth-1, -1*player, false);
         
         valueArray.push([value, "_", moves[i][0],"=>", moves[i][1]]);
 
@@ -155,14 +172,14 @@ function minimax(depth, player, init)
         if(value>bestValue)
         {
           bestValue = value;
-          bestMove = moves[i].slice();
+          bestMove = moves[i];
         }
         
         if(player==-1)
         if(value<bestValue)
         {
           bestValue = value;
-          bestMove = moves[i].slice();
+          bestMove = moves[i];
         }
         
 
@@ -170,10 +187,13 @@ function minimax(depth, player, init)
         myboard[moves[i][1][0]][moves[i][1][1]] = rollback;
     }
 
-    if(debug) console.log(" Values: " + valueArray + " best: " + bestValue + " BestMove: " + bestMove);  
+    if(debug)
+    {
+      console.log("DEPTH: " + depth + " P: "+player+" Values: " + valueArray + " best: " + bestValue + " BestMove: " + bestMove);  
+      console.log("XXX: " + bestValue + " BestMove: " + bestMove+" P: "+player);
+    }
   if (init) 
   {
-
     return bestMove;
   }
   else return bestValue;
