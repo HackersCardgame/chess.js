@@ -33,7 +33,7 @@ function computerMove() {
   //getBoard();
   var depth = parseInt(document.getElementById("depth").value);
   nextMove = minimax(depth, -1, true);
-    document.getElementById("output").innerHTML+="White: "+nextMove[0] + " => " + nextMove[1] + "<br>";
+    document.getElementById("output").innerHTML+="Black: "+nextMove[0] + " => " + nextMove[1] + "<br>";
   document.getElementById("f"+nextMove[1][0]+nextMove[1][1]).innerHTML = document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).innerHTML;
   document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).innerHTML = "";
   document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).className="selected";
