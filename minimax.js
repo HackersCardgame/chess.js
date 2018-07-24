@@ -11,12 +11,27 @@ var myboard = [ [0,0,0,0,0,0,0,0],
 
 var valueBefore = 0;
 
+function play() {
+
+
+  var depth = parseInt(document.getElementById("depth").value);
+    var nextMove = minimax(depth, 1, true);
+    document.getElementById("f"+nextMove[1][0]+nextMove[1][1]).innerHTML = document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).innerHTML;
+    document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).innerHTML = "";
+    document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).className="selected";
+    document.getElementById("f"+nextMove[1][0]+nextMove[1][1]).className="selected";
+    setTimeout(function(){  resetBoard();  document.getElementById("calc").className=""; }, 2000);
+    getBoard();
+
+
+}
+
 function computerMove() {
   console.log("Computer Move");
-
   
   //getBoard();
-  nextMove = minimax(3, -1, true);
+  var depth = parseInt(document.getElementById("depth").value);
+  nextMove = minimax(depth, -1, true);
   console.log("MOVING FROM "+nextMove);
   document.getElementById("f"+nextMove[1][0]+nextMove[1][1]).innerHTML = document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).innerHTML;
   document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).innerHTML = "";
@@ -27,6 +42,16 @@ function computerMove() {
   getBoard();
   //
 
+}
+
+function bothKingExists() {
+  var numKings = 0;
+  for(var i = 0; i<8; i++)
+    for(var j = 0; j<8; j++)
+      if (Math.abs(countField(i, j))==100)
+        numKings++;
+  if(numKings==2) return true;
+  return false;
 }
 
 function resetBoard() {
