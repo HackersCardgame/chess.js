@@ -72,8 +72,8 @@ function registerMouselistener() {
           document.getElementById("output").innerHTML+="White: "+firstSelected +" => " + getFieldCoord(event.target.id)+"<br>" ;
           firstSelected="";
           getBoard();
-          setTimeout(function(){ computerMove(); }, 1000);
-          setTimeout(function(){ document.getElementById("calc").className="selected";   }, 300);
+          setTimeout(function(){ moveBlack(); }, 1000);
+          setTimeout(function(){ document.getElementById("calc").className="selected";   }, 100);
           
         }
       }

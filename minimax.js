@@ -11,23 +11,23 @@ var myboard = [ [0,0,0,0,0,0,0,0],
 
 var valueBefore = 0;
 
-function play() {
+function moveWhite() {
 
-
+  
   var depth = parseInt(document.getElementById("depth").value);
-    var nextMove = minimax(depth, 1, true);
-    document.getElementById("output").innerHTML+="White: "+nextMove[0] + " => " + nextMove[1] + "<br>";
-    document.getElementById("f"+nextMove[1][0]+nextMove[1][1]).innerHTML = document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).innerHTML;
-    document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).innerHTML = "";
-    document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).className="selected";
-    document.getElementById("f"+nextMove[1][0]+nextMove[1][1]).className="selected";
-    setTimeout(function(){  resetBoard();  document.getElementById("calc").className=""; }, 2000);
-    getBoard();
+  var nextMove = minimax(depth, 1, true);
+  document.getElementById("output").innerHTML+="White: "+nextMove[0] + " => " + nextMove[1] + "<br>";
+  document.getElementById("f"+nextMove[1][0]+nextMove[1][1]).innerHTML = document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).innerHTML;
+  document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).innerHTML = "";
+  document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).className="selected";
+  document.getElementById("f"+nextMove[1][0]+nextMove[1][1]).className="selected";
+  setTimeout(function(){  resetBoard();  document.getElementById("calc").className=""; }, 2000);
+  getBoard();
 
 
 }
 
-function computerMove() {
+function moveBlack() {
   console.log("Computer Move");
   
   //getBoard();
@@ -38,8 +38,7 @@ function computerMove() {
   document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).innerHTML = "";
   document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).className="selected";
   document.getElementById("f"+nextMove[1][0]+nextMove[1][1]).className="selected";
-  setTimeout(function(){  resetBoard();
-                          document.getElementById("calc").className="";                            }, 3000);
+  setTimeout(function(){  resetBoard(); document.getElementById("calc").className=""; }, 3000);
   getBoard();
   //
 
