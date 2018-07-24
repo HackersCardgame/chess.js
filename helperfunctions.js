@@ -47,7 +47,7 @@ function getFieldCoord(description)
        return [i, j];
 }
 
-firstSelected = "";
+var firstSelected = "";
 
 //register mouselistener to fields
 function registerMouselistener() {
@@ -67,14 +67,13 @@ function registerMouselistener() {
             return false;
           }
           document.getElementById(fields[firstSelected[0]][firstSelected[1]]).className="";
-          console.log(document.getElementById(fields[firstSelected[0]][firstSelected[1]]).innerHTML);
-          console.log(firstSelected + " => " + getFieldCoord(event.target.id) + ": " + sub(getFieldCoord(event.target.id), firstSelected) );
           document.getElementById(event.target.id).innerHTML = document.getElementById(fields[firstSelected[0]][firstSelected[1]]).innerHTML;
           document.getElementById(fields[firstSelected[0]][firstSelected[1]]).innerHTML="";
+          document.getElementById("output").innerHTML+="White: "+firstSelected +" => " + getFieldCoord(event.target.id)+"<br>" ;
           firstSelected="";
           getBoard();
-            setTimeout(function(){ computerMove(); }, 1000);
-            setTimeout(function(){ document.getElementById("calc").className="selected";   }, 300);
+          setTimeout(function(){ computerMove(); }, 1000);
+          setTimeout(function(){ document.getElementById("calc").className="selected";   }, 300);
           
         }
       }
