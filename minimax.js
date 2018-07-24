@@ -30,6 +30,8 @@ function moveBlack() {
   var depth = parseInt(document.getElementById("depth").value);
   var nextMove = minimax(depth, -1, true);
   if(isCheck(1, nextMove)) console.log("Black CHECK");
+  console.log();
+  if(nextMove[0][0]+nextMove[0][1]+nextMove[1][0]+nextMove[1][1] == 0) alert("CHECKMATE");
   document.getElementById("output").innerHTML+="Black: " + getFigure(nextMove) + " " +nextMove[0] + " => " + nextMove[1] + "<br>";
   document.getElementById("f"+nextMove[1][0]+nextMove[1][1]).innerHTML = document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).innerHTML;
   document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).innerHTML = "";
