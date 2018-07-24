@@ -17,7 +17,7 @@ function computerMove() {
   
   //getBoard();
   valueBefore = evaluateBoard();
-  nextMove = minimax(3, 1, true);
+  nextMove = minimax(3, -1, true);
   document.getElementById("f"+nextMove[1][0]+nextMove[1][1]).innerHTML = document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).innerHTML;
   document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).innerHTML = "";
   document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).className="selected";
@@ -81,14 +81,18 @@ function evaluateBoard() {
   var points=0;
   for(var i = 0; i < 8; i++)
     for(var j = 0; j < 8; j++)
+    {
       points+=countField(i, j);
+      //console.log(points);
+    }
   return points;
 }
 
 function countField(i, j)
 {
+
   switch (myboard[i][j]) {
-    case "♔": return 100;   //white maximizing
+    case "♔": return  100;   //white maximizing
     case "♕": return   50;
     case "♖": return   30;
     case "♗": return   20;
@@ -103,63 +107,73 @@ function countField(i, j)
     case "♟": return    -5;
   }
     return 0;
+    
 }
 
+
+function getRandomInt(max) {
+  return Math.floor(Math.random() * Math.floor(max));
+}
 
 //minmax algorithm that does the game
 function minimax(depth, player, init)
 {
-
-  var moves = shuffle(possibleMoves());
+  console.log("ENTER Depth: "+depth+" P: "+player + " Parent: "+parent);
+  var valueArray = [];
 
   var bestMove = [[0,0],[0,0]];    
 
-  if(depth < 1) return evaluateBoard();
+  if(depth < 2) return evaluateBoard();
 
-  if(init) console.log(moves);
+  console.log("checkpoint");
+  var moves = shuffle(possibleMoves());
+
+  console.log(moves);
 
   //maximizing player  
 
     var bestValue=-1000000*player;
     for(var i = 0; i < moves.length; i++)
     {
-  if (debug) console.log("LOOP P: "+player+ " board: "+myboard + " EVAL: "+evaluateBoard() + " " +myboard[moves[i][0][0]][moves[i][0][1]] +": "+ moves[i][0][0]+"."+moves[i][0][1] +" ==> "+moves[i][1][0]+"."+moves[i][1][1]);
+    
+       if (debug) console.log("LOOP P: "+player+ " board: "+myboard + " EVAL: "+evaluateBoard() + " " +
+                              myboard[moves[i][0][0]][moves[i][0][1]] +": "+
+                              moves[i][0][0]+"."+moves[i][0][1] +" ==> "+moves[i][1][0]+"."+moves[i][1][1]);
 
 
-        //console.log("BEFORE: "+myboard +" EVAL: "+evaluateBoard());
+        //Make the move
         rollback = myboard[moves[i][1][0]][moves[i][1][1]];
         myboard[moves[i][1][0]][moves[i][1][1]] = myboard[moves[i][0][0]][moves[i][0][1]];
         myboard[moves[i][0][0]][moves[i][0][1]] = "";
 
-        //console.log( myboard[moves[i][0][0]][moves[i][0][1]] +": "+ moves[i][0][0]+"."+moves[i][0][1] +" ==> "+moves[i][1][0]+"."+moves[i][1][1]);
-        //console.log("AFTER: "+myboard +" EVAL: "+evaluateBoard());
-   
-        var value = minimax(depth-1, -player, false);
         
-        if (player == 1)
-          if(value>bestValue)
+        var value = minimax(depth-1, -1*player, false, handler);
+        
+        valueArray.push([value, "_", moves[i][0],"=>", moves[i][1]]);
+
+        if(player==1)        
+        if(value>bestValue)
         {
-          //console.log("Setting BEST for 1");
           bestValue = value;
           bestMove = moves[i].slice();
         }
         
-        if (player == -1)
-          if(value<bestValue)
+        if(player==-1)
+        if(value<bestValue)
         {
-          //console.log("Setting BEST for -1");
           bestValue = value;
           bestMove = moves[i].slice();
         }
+        
 
         myboard[moves[i][0][0]][moves[i][0][1]] = myboard[moves[i][1][0]][moves[i][1][1]];
         myboard[moves[i][1][0]][moves[i][1][1]] = rollback;
     }
 
-  
-    if(debug) console.log("DEPTH: " + depth +  " best: " + bestValue + " BestMove: " + bestMove);  
+    if(debug) console.log(" Values: " + valueArray + " best: " + bestValue + " BestMove: " + bestMove);  
   if (init) 
   {
+
     return bestMove;
   }
   else return bestValue;

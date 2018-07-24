@@ -1,5 +1,9 @@
 
 function check(from, to) {
+
+    //console.log(from + " " + to);
+    if(from[0]==to[0]&&from[1]==to[1]) return false;  //TODO: überall anders auch einbauen oder hier rausnehmen und debuggen
+
     //console.log("CHECK: "+from+" => "+to);
     if(checkPawn(from, to)) return true;
 
@@ -135,8 +139,6 @@ function checkRook(from, to) {
 function checkStraight(from, to) {
   //check if move is straight
   delta = sub(to, from);
-
-  if(from[0]==to[0]&&from[1]==to[1]) return false;  //TODO: überall anders auch einbauen oder hier rausnehmen und debuggen
 
   //check if there are any obstacles vertically
   if (delta[0]==0)

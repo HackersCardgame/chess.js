@@ -124,6 +124,7 @@ function comp(a, b) {
 
 
 function importFromURL() {
+  //if(window.location.hash="#") return;
   for(var i = 0; i<8; i++)
     for(var j = 0; j<8; j++)
     {
@@ -132,7 +133,8 @@ function importFromURL() {
       else
       //console.log(decodeURIComponent(window.location.hash).replace("#", "").substring(2*i*8+j,1+i*8+j));
         document.getElementById("f"+i+j).innerHTML=decodeURIComponent(window.location.hash).replace("#", "").substring(0+i*8+j,1+i*8+j);
-    }   
+    }
+    getBoard();
 }
 
 function exportToURL() {
