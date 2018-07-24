@@ -16,7 +16,7 @@ function computerMove() {
 
   
   //getBoard();
-  nextMove = minimax(2, -1, true);
+  nextMove = minimax(3, -1, true);
   console.log("MOVING FROM "+nextMove);
   document.getElementById("f"+nextMove[1][0]+nextMove[1][1]).innerHTML = document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).innerHTML;
   document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).innerHTML = "";
@@ -101,7 +101,6 @@ function evaluateBoard() {
       points+=countField(i, j);
       //console.log(points);
     }
-    console.log("EEE"+myboard);
   return points;
 }
 
@@ -135,44 +134,33 @@ function getRandomInt(max) {
 //minmax algorithm that does the game
 function minimax(depth, player, init)
 {
-  console.log("ENTER Depth: "+depth+" P: "+player );
+  //drawBoardToConsole();
+
   var valueArray = [];
 
   var bestMove = [[0,0],[0,0]];    
 
   if(depth < 1) return evaluateBoard();
 
-  console.log("checkpoint");
   var moves = shuffle(possibleMoves(player));
 
-  console.log(moves);
+  //console.log(moves);
 
   //maximizing player  
 
     var bestValue=-1000000*player;
     for(var i = 0; i < moves.length; i++)
     {
-       console.log("XXXEVAL: "+evaluateBoard());
-    
-    
-       if (debug) console.log("LOOP P: "+player+ " board: "+myboard + " EVAL: "+evaluateBoard() + " " +
-                              myboard[moves[i][0][0]][moves[i][0][1]] +": "+
-                              moves[i][0][0]+"."+moves[i][0][1] +" ==> "+moves[i][1][0]+"."+moves[i][1][1]);
-
-
-        console.log("MOVE: "+myboard[moves[i][0][0]][moves[i][0][1]] +"=>"+myboard[moves[i][1][0]][moves[i][1][1]] + ": "+moves[i][0][0] +"."+moves[i][0][1]+" => " + moves[i][1][0]+"."+moves[i][1][1]);
-
-        FROM = 0;
-        TO = 1;
-        X = 0;
-        Y = 1;
+        FROM = 0; TO = 1; X = 0; Y = 1;
 
         //Make the move
         var rollback = myboard[moves[i][TO][X]][moves[i][TO][Y]];
-        myboard[moves[i][TO][X]][moves[i][TO][Y]] = myboard[moves[i][FROM][X]][moves[i][FROM][X]];
+        myboard[moves[i][TO][X]][moves[i][TO][Y]] = myboard[moves[i][FROM][X]][moves[i][FROM][Y]];
         myboard[moves[i][FROM][X]][moves[i][FROM][Y]] = "";
 
-        
+        console.log("FIGURE TO: "+myboard[moves[i][TO][X]][moves[i][TO][Y]]);
+        console.log("FIGURE FROM: "+myboard[moves[i][FROM][X]][moves[i][FROM][Y]]);
+
         var value = minimax(depth-1, -1*player, false);
         
         valueArray.push([value, "_", moves[i][0],"=>", moves[i][1]]);
@@ -191,22 +179,12 @@ function minimax(depth, player, init)
           bestMove = moves[i];
         }
 
-        myboard[moves[i][FROM][X]][moves[i][FROM][X]] = myboard[moves[i][TO][X]][moves[i][TO][Y]];
+        //Revert the move
+        myboard[moves[i][FROM][X]][moves[i][FROM][Y]] = myboard[moves[i][TO][X]][moves[i][TO][Y]];
         myboard[moves[i][TO][X]][moves[i][TO][Y]] = rollback;
-
-        console.log("MOVE: "+myboard[moves[i][1][0]][moves[i][1][1]] +"=>"+myboard[moves[i][0][0]][moves[i][0][1]] + ": "+moves[i][1][0] +"."+moves[i][1][1]+" => " + moves[i][0][0]+"."+moves[i][0][1]);
-        
     }
-
-    if(debug)
-    {
-      console.log("DEPTH: " + depth + " P: "+player+" Values: " + valueArray + " best: " + bestValue + " BestMove: " + bestMove);  
-      console.log("XXX: " + bestValue + " BestMove: " + bestMove+" P: "+player);
-    }
-  if (init) 
-  {
-    return bestMove;
-  }
+    
+  if (init) return bestMove;
   else return bestValue;
 
 }

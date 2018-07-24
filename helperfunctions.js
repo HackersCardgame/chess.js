@@ -21,6 +21,24 @@ function colorizeHtml() {
   }
 }
 
+function drawBoardToConsole()
+{
+  var line="";
+  for(var i = 0; i<8; i++)
+  {
+    for(var j = 0; j<8; j++)
+    {
+      if(myboard[i][j]=="")
+        line+= " _ ";
+      else
+        line+= " "+myboard[i][j]+" ";
+    }
+    console.log(line);
+    line="";
+  }
+
+}
+
 function getFieldCoord(description)
 {
   for(var i=0; i<8; i++)
@@ -124,7 +142,7 @@ function comp(a, b) {
 
 
 function importFromURL() {
-  //if(window.location.hash="#") return;
+  if(window.location.hash=="") return;
   for(var i = 0; i<8; i++)
     for(var j = 0; j<8; j++)
     {
