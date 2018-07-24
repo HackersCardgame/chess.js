@@ -134,8 +134,6 @@ function getRandomInt(max) {
 //minmax algorithm that does the game
 function minimax(depth, player, init)
 {
-  //drawBoardToConsole();
-
   var valueArray = [];
 
   var bestMove = [[0,0],[0,0]];    
@@ -143,10 +141,6 @@ function minimax(depth, player, init)
   if(depth < 1) return evaluateBoard();
 
   var moves = shuffle(possibleMoves(player));
-
-  //console.log(moves);
-
-  //maximizing player  
 
     var bestValue=-1000000*player;
     for(var i = 0; i < moves.length; i++)
@@ -158,13 +152,8 @@ function minimax(depth, player, init)
         myboard[moves[i][TO][X]][moves[i][TO][Y]] = myboard[moves[i][FROM][X]][moves[i][FROM][Y]];
         myboard[moves[i][FROM][X]][moves[i][FROM][Y]] = "";
 
-        console.log("FIGURE TO: "+myboard[moves[i][TO][X]][moves[i][TO][Y]]);
-        console.log("FIGURE FROM: "+myboard[moves[i][FROM][X]][moves[i][FROM][Y]]);
-
         var value = minimax(depth-1, -1*player, false);
         
-        valueArray.push([value, "_", moves[i][0],"=>", moves[i][1]]);
-
         if(player==1)        
         if(value>bestValue)
         {
@@ -183,7 +172,8 @@ function minimax(depth, player, init)
         myboard[moves[i][FROM][X]][moves[i][FROM][Y]] = myboard[moves[i][TO][X]][moves[i][TO][Y]];
         myboard[moves[i][TO][X]][moves[i][TO][Y]] = rollback;
     }
-    
+
+  //we return the points except the first move we return the move to play    
   if (init) return bestMove;
   else return bestValue;
 
