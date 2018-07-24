@@ -68,7 +68,7 @@ function possibleMoves(player)
           for(var k = 0; k < 8; k ++)
             for(var l = 0; l < 8; l++)
             {
-              if( check( [i,j], [k, l] ) )
+              if( checking( [i,j], [k, l], false ) )
               {
                 moves.push([[i, j], [k, l]]);
               }
@@ -81,7 +81,7 @@ function possibleMoves(player)
           for(var k = 0; k < 8; k ++)
             for(var l = 0; l < 8; l++)
             {
-              if( check( [i,j], [k, l] ) )
+              if( checking( [i,j], [k, l], false ) )
               {
                 moves.push([[i, j], [k, l]]);
               }

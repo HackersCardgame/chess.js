@@ -48,6 +48,7 @@ function getFieldCoord(description)
 }
 
 var firstSelected = "";
+var secondSelected  = "";
 
 //register mouselistener to fields
 function registerMouselistener() {
@@ -63,20 +64,23 @@ function registerMouselistener() {
           firstSelected=getFieldCoord(event.target.id);
         }
         else {
-          if(check(firstSelected, getFieldCoord(event.target.id))==false) {
+          secondSelected=getFieldCoord(event.target.id);
+          if(checking(firstSelected, secondSelected, true)==false) {
             document.getElementById(fields[firstSelected[0]][firstSelected[1]]).className="";
             firstSelected="";
             return false;
           }
           document.getElementById(fields[firstSelected[0]][firstSelected[1]]).className="";
-          document.getElementById(event.target.id).innerHTML = document.getElementById(fields[firstSelected[0]][firstSelected[1]]).innerHTML;
-          document.getElementById(fields[firstSelected[0]][firstSelected[1]]).innerHTML="";
+          myboard[secondSelected[0]][secondSelected[1]]=myboard[firstSelected[0]][firstSelected[1]];
+          //document.getElementById(event.target.id).innerHTML = document.getElementById(fields[firstSelected[0]][firstSelected[1]]).innerHTML;
+          myboard[firstSelected[0]][firstSelected[1]]="";
+          //document.getElementById(fields[firstSelected[0]][firstSelected[1]]).innerHTML="";
           document.getElementById("output").innerHTML+="White: " + getFigure([firstSelected, getFieldCoord(event.target.id)]) + " " +firstSelected +" => " + getFieldCoord(event.target.id)+"<br>" ;
           firstSelected="";
-          getBoard();
+          secondSelected="";
+          drawBoard();
           setTimeout(function(){ moveBlack(); }, 1000);
           setTimeout(function(){ document.getElementById("calc").className="selected";   }, 100);
-          
         }
       }
     }
@@ -89,6 +93,12 @@ function getBoard() {
   for(var i = 0; i < 8; i++)
     for(var j = 0; j < 8; j++)
       myboard[i][j] = document.getElementById("f"+i+j).innerHTML;
+}
+
+function drawBoard() {
+  for(var i = 0; i < 8; i++)
+    for(var j = 0; j < 8; j++)
+      document.getElementById("f"+i+j).innerHTML=myboard[i][j];
 }
 
 function getFigure(move) {
@@ -110,6 +120,30 @@ function isWhite(field) {
   return false;
 }
 
+
+function isEnemy(from, to) {
+  me = myboard[from[0]][from[1]];
+  he = myboard[to[0]][to[1]];
+  if(me == "♕" || me == "♔" || me == "♗" || me == "♘" || me == "♖" || me == "♙")
+    if(he == "♛" || he == "♚" || he == "♝" || he == "♞" || he == "♜" || he == "♟")
+      return true;
+
+  if(me == "♛" || me == "♚" || me == "♝" || me == "♞" || me == "♜" || me == "♟")
+    if(he == "♕" || he == "♔" || he == "♗" || he == "♘" || he == "♖" || he == "♙")
+      return true;
+      
+  return false;      
+}
+
+function isEmpty(to) {
+  //console.log(to);
+  target = myboard[to[0]][to[1]];
+
+  if(target == "♕" || target == "♔" || target == "♗" || target == "♘" || target == "♖" || target == "♙" ||
+     target == "♛" || target == "♚" || target == "♝" || target == "♞" || target == "♜" || target == "♟" ) 
+    return false;
+  return true;
+}
 
 function sub(a, b) {
   var x = a.map(function(item, index) {

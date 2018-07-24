@@ -1,21 +1,56 @@
 
-function check(from, to) {
+var blackKingMoved=false;
+var whiteKingMoved=false;
+var blackT1Moved=false;
+var blackT2Moved=false;
+var whiteT1Moved=false;
+var whiteT2Moved=false;
 
-    //console.log(from + " " + to);
-    if(from[0]==to[0]&&from[1]==to[1]) return false;  //TODO: überall anders auch einbauen oder hier rausnehmen und debuggen
+function checking(from, to, realMove) {
+    if(from[0]==to[0]&&from[1]==to[1]) return false;
 
-    //console.log("CHECK: "+from+" => "+to);
     if(checkPawn(from, to)) return true;
 
-    if(checkKnight(from, to)) return true;
+    if(checkKnight(from, to))
+    {
+      if(comp(from, [7,4]))
+        whiteKingMoved=true; 
+
+      if(comp(from, [0,4]))
+        blackKingMoved=true;
+
+      return true;
+    }
 
     if(checkBishop(from, to)) return true;
     
-    if(checkRook(from, to)) return true;
+    if(checkRook(from, to))
+    {
+      if(comp(from, [7,0]))
+        if (realMove) whiteT1Moved=true;
+      if(comp(from, [7,7]))
+        if (realMove) whiteT2Moved=true;
+
+      if(comp(from, [0,0]))
+        if (realMove) blackT1Moved=true;
+      if(comp(from, [0,7]))
+        if (realMove) blackT2Moved=true;
+
+      return true;
+    }
     
     if(checkQueen(from, to)) return true;
     
-    if(checkKing(from, to)) return true;
+    if(checkKing(from, to, realMove))
+    {
+      if(comp(from, [7,4]))
+        if (realMove) whiteKingMoved=true;
+
+      if(comp(from, [0,4]))
+        if (realMove) blackKingMoved=true;
+        
+      return true;
+    }
 
   return false;
 }
@@ -196,11 +231,9 @@ function checkQueen(from, to) {
   return checkDiagonal(from, to) || checkStraight(from, to);
 }
 
-blackKingMoved=false;
-whiteKingMoved=false;
 
 //TODO: Rochade programmieren: https://de.wikipedia.org/wiki/Rochade
-function checkKing(from, to) {
+function checkKing(from, to, realMove) {
   player = 0;
   if (myboard[from[0]][from[1]]=="♚") 
     player = 1;
@@ -208,6 +241,43 @@ function checkKing(from, to) {
     player = -1;
 
   if(player == 0) return false;
+  
+  if(isWhite(getFigure([from,to])))
+    if(!whiteKingMoved && !whiteT2Moved)
+      if(comp(from, [7, 4]) && comp(to, [7, 6]) && realMove)
+      {
+        myboard[7][5]=myboard[7][7];
+        myboard[7][7]="";
+        return true;
+      }
+
+  if(isWhite(getFigure([from,to])))
+    if(!whiteKingMoved && !whiteT2Moved)
+      if(comp(from, [7, 4]) && comp(to, [7, 2]) && realMove)
+      {
+        myboard[7][3]=myboard[7][0];
+        myboard[7][0]="";
+        return true;
+      }
+  
+  if(isBlack(getFigure([from,to])))
+    if(!blackKingMoved && !blackT2Moved)
+      if(comp(from, [0, 4]) && comp(to, [0, 6]) && realMove)
+      {
+        myboard[0][5]=myboard[0][7];
+        myboard[0][7]="";
+        return true;
+      }
+
+  if(isBlack(getFigure([from,to])))
+    if(!blackKingMoved && !blackT2Moved)
+      if(comp(from, [0, 4]) && comp(to, [0, 2]) && realMove)
+      {
+        myboard[0][3]=myboard[0][0];
+        myboard[0][0]="";
+        return true;
+      }
+
 
   delta = sub(to, from);
   
@@ -221,27 +291,4 @@ function checkKing(from, to) {
 }
 
 
-function isEnemy(from, to) {
-  me = myboard[from[0]][from[1]];
-  he = myboard[to[0]][to[1]];
-  if(me == "♕" || me == "♔" || me == "♗" || me == "♘" || me == "♖" || me == "♙")
-    if(he == "♛" || he == "♚" || he == "♝" || he == "♞" || he == "♜" || he == "♟")
-      return true;
-
-  if(me == "♛" || me == "♚" || me == "♝" || me == "♞" || me == "♜" || me == "♟")
-    if(he == "♕" || he == "♔" || he == "♗" || he == "♘" || he == "♖" || he == "♙")
-      return true;
-      
-  return false;      
-}
-
-function isEmpty(to) {
-  //console.log(to);
-  target = myboard[to[0]][to[1]];
-
-  if(target == "♕" || target == "♔" || target == "♗" || target == "♘" || target == "♖" || target == "♙" ||
-     target == "♛" || target == "♚" || target == "♝" || target == "♞" || target == "♜" || target == "♟" ) 
-    return false;
-  return true;
-}
 
