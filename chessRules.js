@@ -330,6 +330,7 @@ function isCheck(player, tempMove) {
   return false;
 }
 
+
 function isInCheck(player) {
   FROM = 0; TO = 1; X = 0; Y = 1;
 
