@@ -76,10 +76,11 @@ function registerMouselistener() {
           historyPointer+=1;
           document.getElementById(fields[firstSelected[0]][firstSelected[1]]).className="";
           myboard[secondSelected[0]][secondSelected[1]]=myboard[firstSelected[0]][firstSelected[1]];
+          document.getElementById("lostBlack").innerHTML = getLostFigures(-1);
           //document.getElementById(event.target.id).innerHTML = document.getElementById(fields[firstSelected[0]][firstSelected[1]]).innerHTML;
           myboard[firstSelected[0]][firstSelected[1]]="";
           //document.getElementById(fields[firstSelected[0]][firstSelected[1]]).innerHTML="";
-          document.getElementById("output").innerHTML+="White: " + getFigure([firstSelected, getFieldCoord(event.target.id)]) + " " +firstSelected +" => " + getFieldCoord(event.target.id)+"<br>" ;
+          document.getElementById("output").innerHTML+= getFigure([getFieldCoord(event.target.id)],[0,0]) + " " +firstSelected +" => " + getFieldCoord(event.target.id)+"<br>" ;
           firstSelected="";
           secondSelected="";
           drawBoard();
@@ -107,6 +108,17 @@ function drawBoard() {
 
 function getFigure(move) {
   return myboard[move[0][0]][move[0][1]];
+}
+
+function getLostFigures(player) {
+  if(player==1) figures = ["♕", "♔", "♗", "♗", "♘","♘", "♖", "♖", "♙", "♙", "♙", "♙", "♙", "♙", "♙", "♙"];
+  if(player==-1) figures = ["♛", "♚", "♝", "♝", "♞", "♞", "♜", "♜", "♟", "♟", "♟", "♟", "♟", "♟", "♟", "♟"];
+
+  for(var i = 0; i<8; i++)
+    for(var j = 0; j<8; j++)
+      for(var k = 0; k<16; k++)
+        if(myboard[i][j]==figures[k]) { figures[k]=""; break;}
+  return figures.join("");
 }
 
 

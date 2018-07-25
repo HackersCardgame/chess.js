@@ -21,29 +21,34 @@ function moveBlack() {
 
 
 function move(player) {
-  if(!bothKingExists()) return;
   var depth = parseInt(document.getElementById("depth").value);
   var nextMove = minimax(depth, player, true);
-  if(nextMove[0][0]+nextMove[0][1]+nextMove[1][0]+nextMove[1][1] == 0) alert("CHECKMATE");
+  console.log(nextMove[0][0]+" " +nextMove[0][1] +" "+nextMove[1][0]+" "+nextMove[1][1]);
+  if(nextMove[0][0]+nextMove[0][1]+nextMove[1][0]+nextMove[1][1] == 0) 
+  {
+    alert("CHECKMATE");
+  }
+  else if(isInCheck(player)) alert("CHECK");
   
   boardHistory.push(copyArray(myboard));
   historyPointer+=1;
   //move logging
-  document.getElementById("output").innerHTML+="White: " + getFigure(nextMove) + " " + nextMove[0] + " => " + nextMove[1] + "<br>";
+  document.getElementById("output").innerHTML += getFigure(nextMove) + " " + nextMove[0] + " => " + nextMove[1] + "<br>";
   
   myboard[nextMove[1][0]][nextMove[1][1]]=myboard[nextMove[0][0]][nextMove[0][1]];
   myboard[nextMove[0][0]][nextMove[0][1]]=""
-   
+  document.getElementById("lostWhite").innerHTML = getLostFigures(1);
   drawBoard();
+  var nextMove = minimax(depth, -player, true);
+  if(nextMove[0][0]+nextMove[0][1]+nextMove[1][0]+nextMove[1][1] == 0) 
+  {
+    alert("CHECKMATE");
+  }
+  else if(isInCheck(-player)) alert("CHECK");
+  
   document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).className="selected";
   document.getElementById("f"+nextMove[1][0]+nextMove[1][1]).className="selected";
   setTimeout(function(){  resetBoard();  document.getElementById("calc").className=""; }, 2000);
-  var nextMove = minimax(depth, -player, true);
-    if(nextMove[0][0]+nextMove[0][1]+nextMove[1][0]+nextMove[1][1] == 0) 
-    {
-      alert("CHECKMATE");
-    }
-    else if(isInCheck(-player)) alert("CHECK");
 }
 
 

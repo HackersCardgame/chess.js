@@ -14,7 +14,7 @@
 <h1>Schach mit Mini-Max Algorithmus (Alpha-Beta Algorithmus)<br></h1> 
 <button style='width:300;'>Recursions:</button><input  id="depth" style='width:100;background-color:lightblue'value="3" ></input><br><br>
 
-
+<button id="lostWhite" class="lost" style='width:400; background-color: 	#E8E8E8;'></button><br>
 <button id=f00>♜</button><button id=f01>♞</button><button id=f02>♝</button><button id=f03>♛</button><button id=f04>♚</button><button id=f05>♝</button><button id=f06>♞</button><button id=f07>♜</button><br>
 <button id=f10>♟</button><button id=f11>♟</button><button id=f12>♟</button><button id=f13>♟</button><button id=f14>♟</button><button id=f15>♟</button><button id=f16>♟</button><button id=f17>♟</button><br>
 <button id=f20></button><button id=f21></button><button id=f22></button><button id=f23></button><button id=f24></button><button id=f25></button><button id=f26></button><button id=f27></button><br>
@@ -22,9 +22,10 @@
 <button id=f40></button><button id=f41></button><button id=f42></button><button id=f43></button><button id=f44></button><button id=f45></button><button id=f46></button><button id=f47></button><br>
 <button id=f50></button><button id=f51></button><button id=f52></button><button id=f53></button><button id=f54></button><button id=f55></button><button id=f56></button><button id=f57></button><br>
 <button id=f60>♙</button><button id=f61>♙</button><button id=f62>♙</button><button id=f63>♙</button><button id=f64>♙</button><button id=f65>♙</button><button id=f66>♙</button><button id=f67>♙</button><br>
-<button id=f70>♖</button><button id=f71>♘</button><button id=f72>♗</button><button id=f73>♕</button><button id=f74>♔</button><button id=f75>♗</button><button id=f76>♘</button><button id=f77>♖</button><br>
+<button id=f70>♖</button><button id=f71>♘</button><button id=f72>♗</button><button id=f73>♕</button><button id=f74>♔</button><button id=f75>♗</button><button id=f76>♘</button><button id=f77>♖</button>
 <div>
-<br>
+
+<button id="lostBlack" class="lost" style='width:400; background-color: 	#E8E8E8;'></button><br><br>
 <button onclick='moveWhite()' style='width:400; background-color: 	#E8E8E8;'>move White</button><br>
 <button id="calc" onclick='moveBlack()' style='width:400; background-color: #303030; color:white'>move Black</button><br>
 <button onclick='exportToURL()' style='width:400; background-color: yellow;'>export to URL</button><br>
