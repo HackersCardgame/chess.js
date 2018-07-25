@@ -29,7 +29,7 @@ function move(player) {
   boardHistory.push(copyArray(myboard));
   historyPointer+=1;
   //move logging
-  document.getElementById("output").innerHTML+="White: " + getFigure(nextMove) + " " + nextMove[0] + " => " + nextMove[1] + "<br>";
+  document.getElementById("output").innerHTML+= getFigure(nextMove) + " " + nextMove[0] + " => " + nextMove[1] + "<br>";
   
   myboard[nextMove[1][0]][nextMove[1][1]]=myboard[nextMove[0][0]][nextMove[0][1]];
   myboard[nextMove[0][0]][nextMove[0][1]]=""

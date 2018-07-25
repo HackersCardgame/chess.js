@@ -75,11 +75,13 @@ function registerMouselistener() {
           boardHistory.push(copyArray(myboard));
           historyPointer+=1;
           document.getElementById(fields[firstSelected[0]][firstSelected[1]]).className="";
+          document.getElementById("output").innerHTML+=getFigure([firstSelected, getFieldCoord(event.target.id)]) + " " +firstSelected +" => " + getFieldCoord(event.target.id)+"<br>" ;
           myboard[secondSelected[0]][secondSelected[1]]=myboard[firstSelected[0]][firstSelected[1]];
+          
           //document.getElementById(event.target.id).innerHTML = document.getElementById(fields[firstSelected[0]][firstSelected[1]]).innerHTML;
           myboard[firstSelected[0]][firstSelected[1]]="";
           //document.getElementById(fields[firstSelected[0]][firstSelected[1]]).innerHTML="";
-          document.getElementById("output").innerHTML+="White: " + getFigure([firstSelected, getFieldCoord(event.target.id)]) + " " +firstSelected +" => " + getFieldCoord(event.target.id)+"<br>" ;
+
           firstSelected="";
           secondSelected="";
           drawBoard();
