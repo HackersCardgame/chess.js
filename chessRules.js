@@ -96,7 +96,6 @@ function checkKnight(from, to) {
 
   if(player == 0) return false;
 
-
   //check if move is an 2 by 1 move in each direction with a for loop
   delta = sub(to, from);
 
@@ -107,7 +106,7 @@ function checkKnight(from, to) {
       else k=-1;
       if(j==0) l=1;
       else l=-1;
-      //console.log([(k*-1)*2, (l*-1)*1]);
+
       if(comp(delta, [(k*-1)*2, (l*-1)*1]) )
         if(isEmpty(to) || isEnemy(from, to))
           return true;
@@ -307,9 +306,6 @@ function isCheck(player, tempMove) {
   
   for(var i = 0; i<moves.length; i++)
   {
-
-
-
     //Make the move
     var rollback = myboard[moves[i][TO][X]][moves[i][TO][Y]];
     myboard[moves[i][TO][X]][moves[i][TO][Y]] = myboard[moves[i][FROM][X]][moves[i][FROM][Y]];
@@ -325,7 +321,6 @@ function isCheck(player, tempMove) {
     //Revert the move
     myboard[moves[i][FROM][X]][moves[i][FROM][Y]] = myboard[moves[i][TO][X]][moves[i][TO][Y]];
     myboard[moves[i][TO][X]][moves[i][TO][Y]] = rollback;
- 
    }
    
   //Revert the Tempmove

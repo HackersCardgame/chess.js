@@ -26,6 +26,8 @@ function move(player) {
   var nextMove = minimax(depth, player, true);
   if(nextMove[0][0]+nextMove[0][1]+nextMove[1][0]+nextMove[1][1] == 0) alert("CHECKMATE");
   
+  boardHistory.push(copyArray(myboard));
+  historyPointer+=1;
   //move logging
   document.getElementById("output").innerHTML+="White: " + getFigure(nextMove) + " " + nextMove[0] + " => " + nextMove[1] + "<br>";
   
@@ -36,13 +38,12 @@ function move(player) {
   document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).className="selected";
   document.getElementById("f"+nextMove[1][0]+nextMove[1][1]).className="selected";
   setTimeout(function(){  resetBoard();  document.getElementById("calc").className=""; }, 2000);
-  if(isInCheck(-player))
-  {
-    var nextMove = minimax(depth, -player, true);
-      if(nextMove[0][0]+nextMove[0][1]+nextMove[1][0]+nextMove[1][1] == 0) alert("CHECKMATE");
-  }
-  else
-    alert("CHECK");
+  var nextMove = minimax(depth, -player, true);
+    if(nextMove[0][0]+nextMove[0][1]+nextMove[1][0]+nextMove[1][1] == 0) 
+    {
+      alert("CHECKMATE");
+    }
+    else if(isInCheck(-player)) alert("CHECK");
 }
 
 
@@ -183,14 +184,11 @@ function minimax(depth, player, init)
 
     if(init)
     {
-      console.log(i);
       if(isInCheck(player))
       {
-        console.log(i);
         //Revert the move
         myboard[moves[i][FROM][X]][moves[i][FROM][Y]] = myboard[moves[i][TO][X]][moves[i][TO][Y]];
         myboard[moves[i][TO][X]][moves[i][TO][Y]] = rollback;
-        console.log(moves[i]);
         continue;    
       }
     }

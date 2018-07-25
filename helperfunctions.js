@@ -9,6 +9,7 @@ fields = [["f00", "f01", "f02", "f03", "f04", "f05", "f06","f07"],
           ["f60", "f61", "f62", "f63", "f64", "f65", "f66","f67"],
           ["f70", "f71", "f72", "f73", "f74", "f75", "f76","f77"]];
 
+boardHistory = [];
 
 //set the colors from the chessboard the lazy way
 function colorizeHtml() {
@@ -65,11 +66,14 @@ function registerMouselistener() {
         }
         else {
           secondSelected=getFieldCoord(event.target.id);
-          if(checking(firstSelected, secondSelected, true, 1)==false) {
+          if(checking(firstSelected, secondSelected, true, 1)==false)
+          {
             document.getElementById(fields[firstSelected[0]][firstSelected[1]]).className="";
             firstSelected="";
             return false;
           }
+          boardHistory.push(copyArray(myboard));
+          historyPointer+=1;
           document.getElementById(fields[firstSelected[0]][firstSelected[1]]).className="";
           myboard[secondSelected[0]][secondSelected[1]]=myboard[firstSelected[0]][firstSelected[1]];
           //document.getElementById(event.target.id).innerHTML = document.getElementById(fields[firstSelected[0]][firstSelected[1]]).innerHTML;
@@ -178,6 +182,8 @@ function comp(a, b) {
 }
 
 
+
+
 function importFromURL() {
   if(window.location.hash=="") return;
   for(var i = 0; i<8; i++)
@@ -202,3 +208,24 @@ function exportToURL() {
         window.location.hash+=document.getElementById("f"+i+j).innerHTML;
 }
 
+function copyArray(source) {
+  var destination = [];
+
+  for (var i = 0; i < source.length; i++)
+    destination[i] = source[i].slice();
+  
+  return destination;
+}
+
+var historyPointer=0;
+
+function revert(index) {
+  historyPointer-=index;
+  current = boardHistory.pop();
+  for(var i = 0; i<8; i++)
+    for(var j = 0; j<8; j++)
+      myboard[i][j] = current[i][j];
+  drawBoardToConsole(myboard);
+  drawBoardToConsole(boardHistory);
+  drawBoard();
+}
