@@ -12,14 +12,10 @@ button, input {
   
   text-align: center;
   text-decoration: none;
-  font-size: 33;
+  font-size:33;
   -webkit-appearance: none;
   -webkit-border-radius: 0;
   vertical-align: middle;
-}
-
-.lost {
-  font-size: 28
 }
 
 .selected {

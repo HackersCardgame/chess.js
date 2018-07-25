@@ -1,61 +1,21 @@
 
-var blackKingMoved=false;
-var whiteKingMoved=false;
-var blackT1Moved=false;
-var blackT2Moved=false;
-var whiteT1Moved=false;
-var whiteT2Moved=false;
+function check(from, to) {
 
-function checking(from, to, realMove, player) {
-    if(from[0]==to[0]&&from[1]==to[1]) return false;
-    
-    if(realMove)
-      if(isCheck(player, [from, to]))
-        return false;
+    //console.log(from + " " + to);
+    if(from[0]==to[0]&&from[1]==to[1]) return false;  //TODO: überall anders auch einbauen oder hier rausnehmen und debuggen
 
+    //console.log("CHECK: "+from+" => "+to);
     if(checkPawn(from, to)) return true;
 
-    if(checkKnight(from, to))
-    {
-      if(comp(from, [7,4]))
-        whiteKingMoved=true; 
-
-      if(comp(from, [0,4]))
-        blackKingMoved=true;
-
-      return true;
-    }
+    if(checkKnight(from, to)) return true;
 
     if(checkBishop(from, to)) return true;
     
-    if(checkRook(from, to))
-    {
-      if(comp(from, [7,0]))
-        if (realMove) whiteT1Moved=true;
-      if(comp(from, [7,7]))
-        if (realMove) whiteT2Moved=true;
-
-      if(comp(from, [0,0]))
-        if (realMove) blackT1Moved=true;
-      if(comp(from, [0,7]))
-        if (realMove) blackT2Moved=true;
-
-      return true;
-    }
+    if(checkRook(from, to)) return true;
     
     if(checkQueen(from, to)) return true;
     
-    if(checkKing(from, to, realMove))
-    {
-
-      if(comp(from, [7,4]))
-        if (realMove) whiteKingMoved=true;
-
-      if(comp(from, [0,4]))
-        if (realMove) blackKingMoved=true;
-        
-      return true;
-    }
+    if(checkKing(from, to)) return true;
 
   return false;
 }
@@ -96,6 +56,7 @@ function checkKnight(from, to) {
 
   if(player == 0) return false;
 
+
   //check if move is an 2 by 1 move in each direction with a for loop
   delta = sub(to, from);
 
@@ -106,7 +67,7 @@ function checkKnight(from, to) {
       else k=-1;
       if(j==0) l=1;
       else l=-1;
-
+      //console.log([(k*-1)*2, (l*-1)*1]);
       if(comp(delta, [(k*-1)*2, (l*-1)*1]) )
         if(isEmpty(to) || isEnemy(from, to))
           return true;
@@ -235,9 +196,11 @@ function checkQueen(from, to) {
   return checkDiagonal(from, to) || checkStraight(from, to);
 }
 
+blackKingMoved=false;
+whiteKingMoved=false;
 
 //TODO: Rochade programmieren: https://de.wikipedia.org/wiki/Rochade
-function checkKing(from, to, realMove) {
+function checkKing(from, to) {
   player = 0;
   if (myboard[from[0]][from[1]]=="♚") 
     player = 1;
@@ -245,42 +208,6 @@ function checkKing(from, to, realMove) {
     player = -1;
 
   if(player == 0) return false;
-  
-  if(isWhite(getFigure([from,to])))
-    if(!whiteKingMoved && !whiteT2Moved)
-      if(comp(from, [7, 4]) && comp(to, [7, 6]) && realMove)
-      {
-        myboard[7][5]=myboard[7][7];
-        myboard[7][7]="";
-        return true;
-      }
-
-  if(isWhite(getFigure([from,to])))
-    if(!whiteKingMoved && !whiteT2Moved)
-      if(comp(from, [7, 4]) && comp(to, [7, 2]) && realMove)
-      {
-        myboard[7][3]=myboard[7][0];
-        myboard[7][0]="";
-        return true;
-      }
-  
-  if(isBlack(getFigure([from,to])))
-    if(!blackKingMoved && !blackT2Moved)
-      if(comp(from, [0, 4]) && comp(to, [0, 6]) && realMove)
-      {
-        myboard[0][5]=myboard[0][7];
-        myboard[0][7]="";
-        return true;
-      }
-
-  if(isBlack(getFigure([from,to])))
-    if(!blackKingMoved && !blackT2Moved)
-      if(comp(from, [0, 4]) && comp(to, [0, 2]) && realMove)
-      {
-        myboard[0][3]=myboard[0][0];
-        myboard[0][0]="";
-        return true;
-      }
 
   delta = sub(to, from);
   
@@ -294,56 +221,27 @@ function checkKing(from, to, realMove) {
 }
 
 
-function isCheck(player, tempMove) {
-  FROM = 0; TO = 1; X = 0; Y = 1;
-
-  var rollbacktemp = myboard[tempMove[TO][X]][tempMove[TO][Y]];
-  myboard[tempMove[TO][X]][tempMove[TO][Y]]=myboard[tempMove[FROM][X]][tempMove[FROM][Y]];
-  myboard[tempMove[FROM][X]][tempMove[FROM][Y]]="";
-    
-  currentPoints = evaluateBoard();
-  var moves = possibleMoves(-player);
-  
-  for(var i = 0; i<moves.length; i++)
-  {
-    //Make the move
-    var rollback = myboard[moves[i][TO][X]][moves[i][TO][Y]];
-    myboard[moves[i][TO][X]][moves[i][TO][Y]] = myboard[moves[i][FROM][X]][moves[i][FROM][Y]];
-    myboard[moves[i][FROM][X]][moves[i][FROM][Y]] = "";
-    
-    newPoints = evaluateBoard();
-    difference = currentPoints-newPoints;
-    if(difference==(player*100))
-    {
-      console.log("IS CHECK");
+function isEnemy(from, to) {
+  me = myboard[from[0]][from[1]];
+  he = myboard[to[0]][to[1]];
+  if(me == "♕" || me == "♔" || me == "♗" || me == "♘" || me == "♖" || me == "♙")
+    if(he == "♛" || he == "♚" || he == "♝" || he == "♞" || he == "♜" || he == "♟")
       return true;
-    }
-    //Revert the move
-    myboard[moves[i][FROM][X]][moves[i][FROM][Y]] = myboard[moves[i][TO][X]][moves[i][TO][Y]];
-    myboard[moves[i][TO][X]][moves[i][TO][Y]] = rollback;
-   }
-   
-  //Revert the Tempmove
-  myboard[tempMove[FROM][X]][tempMove[FROM][Y]] = myboard[tempMove[TO][X]][tempMove[TO][Y]];
-  myboard[tempMove[TO][X]][tempMove[TO][Y]] = rollbacktemp;
 
-  return false;
-}
-
-function isInCheck(player) {
-  FROM = 0; TO = 1; X = 0; Y = 1;
-
-  var moves = possibleMoves(-player);
-  
-  for(var i=0; i<moves.length; i++)
-  {
-    if(player=-1)
-      if(myboard[moves[i][TO][X]][moves[i][TO][Y]]=="♚")
-        return true;
+  if(me == "♛" || me == "♚" || me == "♝" || me == "♞" || me == "♜" || me == "♟")
+    if(he == "♕" || he == "♔" || he == "♗" || he == "♘" || he == "♖" || he == "♙")
+      return true;
       
-    if(player=1)
-      if(myboard[moves[i][TO][X]][moves[i][TO][Y]]=="♔")
-        return true;
-  }
-  return false;
+  return false;      
 }
+
+function isEmpty(to) {
+  //console.log(to);
+  target = myboard[to[0]][to[1]];
+
+  if(target == "♕" || target == "♔" || target == "♗" || target == "♘" || target == "♖" || target == "♙" ||
+     target == "♛" || target == "♚" || target == "♝" || target == "♞" || target == "♜" || target == "♟" ) 
+    return false;
+  return true;
+}
+
