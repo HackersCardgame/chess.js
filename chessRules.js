@@ -294,8 +294,10 @@ function checkKing(from, to, realMove) {
 }
 
 
-function isCheck(player, tempMove) {
+function isCheck(player, tempMove) {  //TODO: check and checkmate checking very ugly, maybe add tempBoard but this would affect performance
   FROM = 0; TO = 1; X = 0; Y = 1;
+
+  tempBoard = copyArray(myboard);
 
   var rollbacktemp = myboard[tempMove[TO][X]][tempMove[TO][Y]];
   myboard[tempMove[TO][X]][tempMove[TO][Y]]=myboard[tempMove[FROM][X]][tempMove[FROM][Y]];
