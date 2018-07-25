@@ -58,7 +58,7 @@ function registerMouselistener() {
     for (var j = 0; j<8; j++) {
       document.getElementById(fields[i][j]).onclick = function( event ) {
         getBoard();
-        if(!bothKingExists()) return;
+        if(!bothKingExists()) return;  //TODO: alte variante, neu machen
         if (firstSelected=="") {
           if (document.getElementById(event.target.id).innerHTML=="") return;
           document.getElementById(event.target.id).className="selected";

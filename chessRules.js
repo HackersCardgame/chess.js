@@ -9,6 +9,9 @@ var whiteT2Moved=false;
 function checking(from, to, realMove, player) {
     if(from[0]==to[0]&&from[1]==to[1]) return false;
     
+    if(realMove)
+      if(isCheck(player, [from, to]))
+        return false;
 
     if(checkPawn(from, to)) return true;
 
@@ -44,9 +47,6 @@ function checking(from, to, realMove, player) {
     
     if(checkKing(from, to, realMove))
     {
-      if(realMove)
-        if(isCheck(player, [from, to]))
-          return false;
 
       if(comp(from, [7,4]))
         if (realMove) whiteKingMoved=true;
