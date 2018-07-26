@@ -238,7 +238,5 @@ function revert(index) {
   for(var i = 0; i<8; i++)
     for(var j = 0; j<8; j++)
       myboard[i][j] = current[i][j];
-  drawBoardToConsole(myboard);
-  drawBoardToConsole(boardHistory);
   drawBoard();
 }
