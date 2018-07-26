@@ -1,10 +1,8 @@
 
 function alphabeta(depth, player, init, alpha, beta)
 {
-  console.log("depth: "+ depth + " player " + player + " alpha: " + alpha + " beta: " + beta );   
-
   FROM = 0; TO = 1; X = 0; Y = 1;
-  //console.log("alphabeta("+depth+","+player+")");
+
   var bestMove = [[0,0],[0,0]];    
 
   if(depth < 1) return evaluateBoard();
@@ -15,7 +13,6 @@ function alphabeta(depth, player, init, alpha, beta)
 
   for(var i = 0; i < moves.length; i++)
   {
-    //console.log(moves[i]);
     //Make the move
     var rollback = myboard[moves[i][TO][X]][moves[i][TO][Y]];
     myboard[moves[i][TO][X]][moves[i][TO][Y]] = myboard[moves[i][FROM][X]][moves[i][FROM][Y]];
@@ -52,5 +49,5 @@ function alphabeta(depth, player, init, alpha, beta)
 
   return bestValue;
 }
- 
+
  
