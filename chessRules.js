@@ -75,7 +75,7 @@ function checkPawn(from, to) {
     if(comp(delta, [1*player, 0]) && !isEnemy(from,to) && isEmpty(to)) return true;
     1
     //check double start move
-    if(comp(delta, [2*player, 0]) && isEmpty([from[0],from[1]]) && ((from[0]==1 ||from[0]==6))) 
+    if(comp(delta, [2*player, 0]) && isEmpty([to[0],to[1]]) && ((from[0]==1 ||from[0]==6))) 
       if(!isEnemy(from, to))
         return true;
     
