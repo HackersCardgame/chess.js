@@ -28,27 +28,34 @@
 <button id=f70>♖</button><button id=f71>♘</button><button id=f72>♗</button><button id=f73>♕</button><button id=f74>♔</button><button id=f75>♗</button><button id=f76>♘</button><button id=f77>♖</button>
 <div>
 
+
+<!-- The Modal Dialogbox selecting pawn replacement -->
+<div id="select" class="modal">
+
+  <div class="modalContent">
+    <span class="close">&times;</span>
+    <p>Select the Figure for the Pawn the just arrived the other side of the Board</p>
+    <button id=s0 onClick="transformationFigure='♖'; continueTransformation()">♜</button>
+    <button id=s1>♞</button>
+    <button id=s2>♝</button>
+    <button id=s3>♛</button>
+  </div>
+</div>
+
 <!-- The Modal Dialogbox for checkmate -->
 <div id="checkmate" class="modal">
   <!-- Modal content -->
-  <div class="modal-content">
+  <div class="modalContent">
     <span class="close">&times;</span>
     <p>Checkmate</p>
   </div>
 </div>
 
-<!-- The Modal Dialogbox selecting pawn replacement -->
-<div id="select" class="modal">
-
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <p>Select the Figure for the Pawn the just arrived the other side of the Board</p>
-  </div>
-</div>
 
 
 <button id="lostBlack" class="lost" style='width:400; background-color: #E8E8E8;'></button><br><br>
-<button onclick='openModal("select")' style='width:400; background-color:	#E8E8E8;'>testModal</button><br>
+<button onclick='openModal("checkmate")' style='width:400; background-color:	#E8E8E8;'>test Checkmate</button><br>
+<button onclick='openModal("select")' style='width:400; background-color:	#E8E8E8;'>test Select Figure</button><br>
 <button onclick='moveWhite()' style='width:400; background-color: 	#E8E8E8;'>move White</button><br>
 <button id="calc" onclick='moveBlack()' style='width:400; background-color: #303030; color:white'>move Black</button><br>
 <button onclick='exportToURL()' style='width:400; background-color: yellow;'>export to URL</button><br>

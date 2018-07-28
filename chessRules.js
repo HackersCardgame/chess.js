@@ -13,7 +13,7 @@ function checking(from, to, realMove, player) {
       if(isCheck(player, [from, to]))
         return false;
 
-    if(checkPawn(from, to)) return true;
+    if(checkPawn(from, to, realMove)) return true;
 
     if(checkKnight(from, to))
     {
@@ -61,7 +61,7 @@ function checking(from, to, realMove, player) {
 }
 
 
-function checkPawn(from, to) {
+function checkPawn(from, to, realMove) {
   player = 0;
   if (myboard[from[0]][from[1]]=="♟") 
     player = 1;
@@ -72,15 +72,25 @@ function checkPawn(from, to) {
 
     //check single move
     delta = sub(to, from);
-    if(comp(delta, [1*player, 0]) && !isEnemy(from,to) && isEmpty(to)) return true;
-    1
+    if(comp(delta, [1*player, 0]) && !isEnemy(from,to) && isEmpty(to))
+    {
+      if(to[0]==0 && realMove)
+        selectFigure(to); 
+      return true;
+    }
+    
     //check double start move
     if(comp(delta, [2*player, 0]) && isEmpty([to[0],to[1]]) && isEmpty([from[0]+player,from[1]]) && (from[0]==1 ||from[0]==6)) 
       if(!isEnemy(from, to))
         return true;
     
     //check diagonal 1 when attacking enemy
-    if( ( comp(delta, [1*player, 1*player]) && isEnemy(from, to) ) || ( comp(delta, [1*player, -1*player]) && isEnemy(from, to) ) ) return true;
+    if( ( comp(delta, [1*player, 1*player]) && isEnemy(from, to) ) || ( comp(delta, [1*player, -1*player]) && isEnemy(from, to) ) )
+    {
+      if(to[0]==0 && realMove)
+        selectFigure(to); 
+      return true;
+    }
 
     return false;
 

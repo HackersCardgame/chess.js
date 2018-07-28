@@ -23,8 +23,8 @@ function moveBlack() {
 function move(player) {
   if(!bothKingExists()) return;
   var depth = parseInt(document.getElementById("depth").value);
-  //var nextMove = minimax(depth, player, true);
-  nextMove = alphabeta(depth, player, true, -1000000, 1000000);
+  var nextMove = minimax(depth, player, true);
+  //nextMove = alphabeta(depth, player, true, -1000000, 1000000);
   
   if(nextMove[0][0]+nextMove[0][1]+nextMove[1][0]+nextMove[1][1] == 0) alert("CHECKMATE");
   
@@ -42,8 +42,8 @@ function move(player) {
   document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).className="selected";
   document.getElementById("f"+nextMove[1][0]+nextMove[1][1]).className="selected";
   setTimeout(function(){  resetBoard();  document.getElementById("calc").className=""; }, 2000);
-  //var nextMove = minimax(depth, -player, true);
-  var nextMove = alphabeta(depth, player, true, -1000000, 1000000);
+  var nextMove = minimax(depth, -player, true);
+  //var nextMove = alphabeta(depth, player, true, -1000000, 1000000);
     if(nextMove[0][0]+nextMove[0][1]+nextMove[1][0]+nextMove[1][1] == 0) 
     {
       alert("CHECKMATE");

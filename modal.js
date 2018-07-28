@@ -40,3 +40,12 @@ function closeModal(myModal)
   modal.style.display = "none";
 }
 
+
+window.onkeyup = function(e) {
+  var key = e.keyCode ? e.keyCode : e.which;
+
+  if (key == 27) {
+    closeModal("checkmate");
+    closeModal("select");
+  }
+}

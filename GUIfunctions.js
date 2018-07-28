@@ -58,7 +58,6 @@ function registerMouselistener() {
     for (var j = 0; j<8; j++) {
       document.getElementById(fields[i][j]).onclick = function( event ) {
         getBoard();
-        if(!bothKingExists()) return;  //TODO: alte variante, neu machen
         if (firstSelected=="") {
           if (document.getElementById(event.target.id).innerHTML=="") return;
           document.getElementById(event.target.id).className="selected";
@@ -239,4 +238,23 @@ function revert(index) {
     for(var j = 0; j<8; j++)
       myboard[i][j] = current[i][j];
   drawBoard();
+}
+
+var transformationField=[];
+var transformationFigure="";
+
+function selectFigure(field) {
+  transformationField=field;
+  console.log(transformationField);
+  openModal("select");
+
+  throw new Error('This is not an error. This is just to abort javascript');
+}
+
+function continueTransformation() {
+  myboard[transformationField[0]][transformationField[1]]=transformationFigure;
+  drawBoard();
+  closeModal("select");
+  moveBlack();
+  firstSelected="";
 }
