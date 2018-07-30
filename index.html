@@ -2,36 +2,47 @@
   <head>
     <meta charset="UTF-8">
     <title>Chess / Schach</title>
+
     <script src="./GUIfunctions.js" charset="UTF-8"></script>
-    <script src="./modal.js" charset="UTF-8"></script>
-    <script src="./chessRules.js" charset="UTF-8"></script>
+    <script src="./importExport.js" charset="UTF-8"></script>
+    <script src="./undo.js" charset="UTF-8"></script>
+
+    <script src="./move.js" charset="UTF-8"></script>
     <script src="./minimax.js" charset="UTF-8"></script>
-    <script src="./alphabeta.js" charset="UTF-8"></script>
-    <link rel="stylesheet" href="./style.css">
-    <link rel="stylesheet" href="./modal.css">
+    <script src="./chessRules.js" charset="UTF-8"></script>
+    <script src="./parallel.js" charset="UTF-8"></script>
+
+    <script src="./modal.js" charset="UTF-8"></script>
+<!--    
+    <script src="./alphabeta.js" charset="UTF-8"></script>-->
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/modal.css">
   </head>
   <body style="font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;">
 
 
 <div>
-<h1>Schach mit Mini-Max Algorithmus<br> (bzw. Alpha-Beta Algorithmus)<br></h1> 
-<button style='width:300;'>Recursions:</button><input  id="depth" style='width:100;background-color:lightblue'value="3" ></input><br><br>
+<!--<h1>Schach mit Mini-Max Algorithmus<br> (bzw. Alpha-Beta Algorithmus)<br></h1>-->
+<button style='width:300;'>Recursions:</button><input  id="depth" style='width:100;background-color:lightblue' value="4" ></input><br>
+<button style='width:250;'>calcul. Moves:</button><input id="instances" style='width:150;background-color:tomato' readonly></input><br><br>
 
-<button id="lostWhite" class="lost" style='width:400; background-color: 	#E8E8E8;'></button><br>
-<button id=f00>♜</button><button id=f01>♞</button><button id=f02>♝</button><button id=f03>♛</button><button id=f04>♚</button><button id=f05>♝</button><button id=f06>♞</button><button id=f07>♜</button><br>
-<button id=f10>♟</button><button id=f11>♟</button><button id=f12>♟</button><button id=f13>♟</button><button id=f14>♟</button><button id=f15>♟</button><button id=f16>♟</button><button id=f17>♟</button><br>
-<button id=f20></button><button id=f21></button><button id=f22></button><button id=f23></button><button id=f24></button><button id=f25></button><button id=f26></button><button id=f27></button><br>
-<button id=f30></button><button id=f31></button><button id=f32></button><button id=f33></button><button id=f34></button><button id=f35></button><button id=f36></button><button id=f37></button><br>
-<button id=f40></button><button id=f41></button><button id=f42></button><button id=f43></button><button id=f44></button><button id=f45></button><button id=f46></button><button id=f47></button><br>
-<button id=f50></button><button id=f51></button><button id=f52></button><button id=f53></button><button id=f54></button><button id=f55></button><button id=f56></button><button id=f57></button><br>
-<button id=f60>♙</button><button id=f61>♙</button><button id=f62>♙</button><button id=f63>♙</button><button id=f64>♙</button><button id=f65>♙</button><button id=f66>♙</button><button id=f67>♙</button><br>
-<button id=f70>♖</button><button id=f71>♘</button><button id=f72>♗</button><button id=f73>♕</button><button id=f74>♔</button><button id=f75>♗</button><button id=f76>♘</button><button id=f77>♖</button>
+<button id="lostWhite" class="lost" style='width:400;'></button><br>
+<button class="legend"></button><button class="legend">1</button><button class="legend">2</button><button class="legend">3</button><button class="legend">4</button><button class="legend">5</button><button class="legend">6</button><button class="legend">7</button><button class="legend">8</button><button class="legend"></button><br>
+<button class="legend">A</button><button id=f00>♜</button><button id=f01>♞</button><button id=f02>♝</button><button id=f03>♛</button><button id=f04>♚</button><button id=f05>♝</button><button id=f06>♞</button><button id=f07>♜</button><button class="legend">A</button><br>
+<button class="legend">B</button><button id=f10>♟</button><button id=f11>♟</button><button id=f12>♟</button><button id=f13>♟</button><button id=f14>♟</button><button id=f15>♟</button><button id=f16>♟</button><button id=f17>♟</button><button class="legend">B</button><br>
+<button class="legend">C</button><button id=f20></button><button id=f21></button><button id=f22></button><button id=f23></button><button id=f24></button><button id=f25></button><button id=f26></button><button id=f27></button><button class="legend">C</button><br>
+<button class="legend">D</button><button id=f30></button><button id=f31></button><button id=f32></button><button id=f33></button><button id=f34></button><button id=f35></button><button id=f36></button><button id=f37></button><button class="legend">D</button><br>
+<button class="legend">E</button><button id=f40></button><button id=f41></button><button id=f42></button><button id=f43></button><button id=f44></button><button id=f45></button><button id=f46></button><button id=f47></button><button class="legend">E</button><br>
+<button class="legend">F</button><button id=f50></button><button id=f51></button><button id=f52></button><button id=f53></button><button id=f54></button><button id=f55></button><button id=f56></button><button id=f57></button><button class="legend">F</button><br>
+<button class="legend">G</button><button id=f60>♙</button><button id=f61>♙</button><button id=f62>♙</button><button id=f63>♙</button><button id=f64>♙</button><button id=f65>♙</button><button id=f66>♙</button><button id=f67>♙</button><button class="legend">G</button><br>
+<button class="legend">H</button><button id=f70>♖</button><button id=f71>♘</button><button id=f72>♗</button><button id=f73>♕</button><button id=f74>♔</button><button id=f75>♗</button><button id=f76>♘</button><button id=f77>♖</button><button class="legend">H</button><br>
+<button class="legend"></button><button class="legend">1</button><button class="legend">2</button><button class="legend">3</button><button class="legend">4</button><button class="legend">5</button><button class="legend">6</button><button class="legend">7</button><button class="legend">8</button><button class="legend"></button><br>
+<button id="lostBlack" class="lost" style='width:400;'></button><br><br>
 <div>
 
 
 <!-- The Modal Dialogbox selecting pawn replacement -->
 <div id="select" class="modal">
-
   <div class="modalContent">
     <span class="close">&times;</span>
     <p>Select the Figure for the Pawn the just arrived the other side of the Board</p>
@@ -43,24 +54,51 @@
 </div>
 
 <!-- The Modal Dialogbox for checkmate -->
+<div id="illegal" class="modal">
+  <!-- Modal content -->
+  <div class="modalContent">
+    <span class="close">&times;</span>
+    <p>Illegal Move</p>
+  </div>
+</div>
+
+<!-- The Modal Dialogbox for checkmate -->
+<div id="check" class="modal">
+  <!-- Modal content -->
+  <div class="modalContent">
+    <span class="close">&times;</span>
+    <p>Check</p>
+  </div>
+</div>
+
+<!-- The Modal Dialogbox for checkmate -->
 <div id="checkmate" class="modal">
   <!-- Modal content -->
   <div class="modalContent">
     <span class="close">&times;</span>
-    <p>Checkmate</p>
+    <p>CHECKMATE</p>
+  </div>
+</div>
+
+<!-- The Modal Dialogbox for checkmate -->
+<div id="win" class="modal">
+  <!-- Modal content -->
+  <div class="modalContent">
+    <span class="close">&times;</span>
+    <p>You WON against the Computer (<a href="https://en.wikipedia.org/wiki/Minimax">Minimax Algorithm</a>)</p>
   </div>
 </div>
 
 
 
-<button id="lostBlack" class="lost" style='width:400; background-color: #E8E8E8;'></button><br><br>
-<button onclick='moveWhite()' style='width:400; background-color: 	#E8E8E8;'>move White</button><br>
-<button id="calc" onclick='moveBlack()' style='width:400; background-color: #303030; color:white'>move Black</button><br>
+<button id="white" onclick='moveWhite()' style='width:400; background-color: #E8E8E8;'>turn White</button><br>
+<button id="black" onclick='moveBlack()' style='width:400; background-color: #303030; color:white'>turn Black</button><br>
+<button onclick='revert(1)' style="width:400; background-color: tomato">undo</button><br>
 <button onclick='exportToURL()' style='width:400; background-color: yellow;'>export to URL</button><br>
 <button onclick='importFromURL()' style="width:400; background-color: lightgreen">import from URL</button><br>
-<button onclick='revert(1)' style="width:400; background-color: red">undo</button><br>
+
     <br>
-    <p id="output">The fieldnumbers begin at 0 not at 8 because the array starts at 0</br></br>
+    <p id="output"></br></br>
     </p>
   </body>
 
@@ -68,9 +106,10 @@
 
 <script>
 colorizeHtml();
+getBoardFromHTML();
 registerMouselistener();
-getBoard();
 importFromURL();
+getBoardFromHTML();
 </script>
 </html>
 

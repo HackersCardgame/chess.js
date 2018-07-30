@@ -1,0 +1,58 @@
+x=8 Felder
+y=8 Felder
+zustände = 2 * 6 Figuren + 1 * Leer = 13
+
+8x8x4 = 256 Bit = 32Byte
+
+32bit * 8 * 8 = 2048Bit = 256Byte
+
+
+[xxxxxxxx][yyyyyyyy][zzzz]
+ 12345678  12345678  1234
+
+
+struct
+
+var uint8 = new int8Array(2);
+
+uint8[8][8] = 1;  //weisser Bauer
+uint8[8][8] = 2;  //weisser Turm
+uint8[8][8] = 3;  //weisser Läufer
+uint8[8][8] = 4;  //weisser Springer
+uint8[8][8] = 5;  //weisse Königin
+uint8[8][8] = 6;  //weisser König
+
+uint8[8][8] = 0;  //leer
+
+uint8[8][8] = -1;  //schwarzer Bauer
+uint8[8][8] = -2;  //schwarzer Turm
+uint8[8][8] = -3;  //schwarzer Läufer
+uint8[8][8] = -4;  //schwarzer Springer
+uint8[8][8] = -5;  //schwarze Königin
+uint8[8][8] = -6;  //schwarzer König
+
+
+weiss: x>0
+schwarz: x<0
+leer: x==0
+
+var cols=8;
+var rows=8;
+
+var board = int8Array(cols*rows);
+
+var from = int8Array(2);
+var to = int8Array(2);
+var player = int8Array(1);
+
+function checking(from, to, player)
+{
+  if(player*board[from[0]*8+from[1]]<0)
+    return false;
+}
+
+
+
+
+drawBoardToConsole
+drawBoard

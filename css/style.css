@@ -18,6 +18,16 @@ button, input {
   vertical-align: middle;
 }
 
+button.legend {
+  background-color: white;
+  font-size:20;
+}
+
+button.lost {
+  background-color: white;
+  font-size:33;
+}
+
 .selected {
   animation: blinker 0.5s linear infinite;
 }

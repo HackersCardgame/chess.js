@@ -1,108 +1,16 @@
-var debug=true;
-
-var myboard = [ [0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0] ];
-
-var valueBefore = 0;
-
-function moveWhite() {
-  move(1);
-}
-
-function moveBlack() {
-  move(-1);
-}
+//constants
+FROM = 0; TO = 1; X = 0; Y = 1;
 
 
-function move(player) {
-  if(!bothKingExists()) return;
-  var depth = parseInt(document.getElementById("depth").value);
-  var nextMove = minimax(depth, player, true);
-  //nextMove = alphabeta(depth, player, true, -1000000, 1000000);
-  
-  if(nextMove[0][0]+nextMove[0][1]+nextMove[1][0]+nextMove[1][1] == 0) alert("CHECKMATE");
-  
-  boardHistory.push(copyArray(myboard));
-  historyPointer+=1;
-  //move logging
-  document.getElementById("output").innerHTML+= getFigure(nextMove) + " " + nextMove[0] + " => " + nextMove[1] + "<br>";
-  
-  myboard[nextMove[1][0]][nextMove[1][1]]=myboard[nextMove[0][0]][nextMove[0][1]];
-  myboard[nextMove[0][0]][nextMove[0][1]]=""
-   
-  drawBoard();
-  document.getElementById("lostWhite").innerHTML = getLostFigures(1);
-  
-  document.getElementById("f"+nextMove[0][0]+nextMove[0][1]).className="selected";
-  document.getElementById("f"+nextMove[1][0]+nextMove[1][1]).className="selected";
-  setTimeout(function(){  resetBoard();  document.getElementById("calc").className=""; }, 2000);
-  var nextMove = minimax(depth, -player, true);
-  //var nextMove = alphabeta(depth, player, true, -1000000, 1000000);
-    if(nextMove[0][0]+nextMove[0][1]+nextMove[1][0]+nextMove[1][1] == 0) 
+//white = maximizing  // black = minimizing
+function evaluateBoard() {
+  var points=0;
+  for(var i = 0; i < 8; i++)
+    for(var j = 0; j < 8; j++)
     {
-      alert("CHECKMATE");
+      points+=board[i*8+j]
     }
-    else if(isInCheck(-player)) alert("CHECK");
-}
-
-
-function bothKingExists() {
-  var numKings = 0;
-  for(var i = 0; i<8; i++)
-    for(var j = 0; j<8; j++)
-      if (Math.abs(countField(i, j))==100)
-        numKings++;
-  if(numKings==2) return true;
-  return false;
-}
-
-function resetBoard() {
-  for(var i = 0; i<8; i++)
-    for(var j = 0; j<8; j++)
-      document.getElementById("f"+i+j).className="";
-}
-
-
-
-//get list of possible moves
-function possibleMoves(player)
-{
-  oldFigure="";
-  var moves=[];
-
-  if(player==1)
-    for(var i = 0; i < 8; i++)
-      for(var j = 0; j < 8; j++)
-        if (isWhite(myboard[i][j]))
-          for(var k = 0; k < 8; k ++)
-            for(var l = 0; l < 8; l++)
-            {
-              if( checking( [i,j], [k, l], false, player ) )
-              {
-                moves.push([[i, j], [k, l]]);
-              }
-            }
-
-  if(player==-1)
-    for(var i = 0; i < 8; i++)
-      for(var j = 0; j < 8; j++)
-        if (isBlack(myboard[i][j]))
-          for(var k = 0; k < 8; k ++)
-            for(var l = 0; l < 8; l++)
-            {
-              if( checking( [i,j], [k, l], false, player ) )
-              {
-                moves.push([[i, j], [k, l]]);
-              }
-            }
-
-  return moves;
+  return points;
 }
 
 function shuffle(array) {
@@ -124,52 +32,46 @@ function shuffle(array) {
   return array;
 }
 
+//get list of possible moves
+function possibleMoves(player)
+{
+  var moves=[];
 
-//white = maximizing  // black = minimizing
-function evaluateBoard() {
-  var points=0;
   for(var i = 0; i < 8; i++)
     for(var j = 0; j < 8; j++)
-    {
-      points+=countField(i, j);
-      //console.log(points);
-    }
-  return points;
+      for(var k = 0; k < 8; k ++)
+        for(var l = 0; l < 8; l++)
+        {
+          if( checking( [i,j], [k, l], player ) )
+          {
+            moves.push([[i, j], [k, l]]);
+          }
+        }
+
+  return moves;
 }
 
-function countField(i, j)
-{
+//TODO: braucht viel ressourcen wenn das bei jedem Zug aufgerufen wird => wird nur in der obersten instanz aufgerufen
+function isInCheck(player) {
+  moves = possibleMoves(-player);
+  
+  for(var i=0; i<moves.length; i++)
+    if(board[moves[i][1][0]*8+moves[i][1][1]]==100*player)
+      return true;
+      
+  return false;
 
-  switch (myboard[i][j]) {
-    case "♔": return  100;   //white maximizing
-    case "♕": return   50;
-    case "♖": return   30;
-    case "♗": return   20;
-    case "♘": return   15;
-    case "♙": return    5;
-    
-    case "♚": return -100;  //black minimizing
-    case "♛": return   -50;
-    case "♜": return   -30;
-    case "♝": return   -20;
-    case "♞": return   -15;
-    case "♟": return    -5;
-  }
-    return 0;
-    
 }
 
-
-function getRandomInt(max) {
-  return Math.floor(Math.random() * Math.floor(max));
-}
+var instances=0;
 
 //minmax algorithm that does the game
-function minimax(depth, player, init)
+function minimax(depth, player, init, resetCounter)
 {
-  var valueArray = [];
-
-  var bestMove = [[0,0],[0,0]];    
+  if(resetCounter) instances=0;
+  else instances+=1;
+  
+  var bestMove = [[0,0],[0,0]];
 
   if(depth < 1) return evaluateBoard();
 
@@ -178,22 +80,16 @@ function minimax(depth, player, init)
   var bestValue=-1000000*player;
   for(var i = 0; i < moves.length; i++)
   {
-    FROM = 0; TO = 1; X = 0; Y = 1;
 
-
-
-    //Make the move
-    var rollback = myboard[moves[i][TO][X]][moves[i][TO][Y]];
-    myboard[moves[i][TO][X]][moves[i][TO][Y]] = myboard[moves[i][FROM][X]][moves[i][FROM][Y]];
-    myboard[moves[i][FROM][X]][moves[i][FROM][Y]] = "";
+    //Make the move  TODO: replace with commitMove(FROM, TO, MANUAL):returns savedata
+    var savedData = commitMove(moves[i], player);
 
     if(init)
     {
       if(isInCheck(player))
       {
-        //Revert the move
-        myboard[moves[i][FROM][X]][moves[i][FROM][Y]] = myboard[moves[i][TO][X]][moves[i][TO][Y]];
-        myboard[moves[i][TO][X]][moves[i][TO][Y]] = rollback;
+        //Revert the move: replace with revertMove(savedata)
+        revertMove(savedData);
         continue;    
       }
     }
@@ -215,14 +111,55 @@ function minimax(depth, player, init)
       bestMove = moves[i];
     }
 
-    //Revert the move
-    myboard[moves[i][FROM][X]][moves[i][FROM][Y]] = myboard[moves[i][TO][X]][moves[i][TO][Y]];
-    myboard[moves[i][TO][X]][moves[i][TO][Y]] = rollback;
+    //Revert the move replace with commitMove(FROM, TO, MANUAL):returns savedata
+    revertMove(savedData);
   }
 
   //we return the points except the first move we return the move to play    
-  if (init) return bestMove;
+  if (init)
+  {
+    document.getElementById("instances").value=instances;
+    return bestMove;
+  }
   else return bestValue;
 
+}
+
+
+function commitMove(move, player) {
+  var king=0;
+  if(player==1) king=whiteKing;
+  if(player==-1) king=blackKing;
+  
+  if(player==1) pawn=whitePawn;
+  if(player==-1) pawn=blackPawn;
+  
+  var savedData = [];
+
+  savedData.push([move, board[move[FROM][X]*8+move[FROM][Y]], board[move[TO][X]*8+move[TO][Y]] ]);
+  
+  if(board[move[FROM][X]*8+move[FROM][Y]]==king)
+  {
+      savedData.push( makeCastlingMove(move, player, false) );
+  }
+
+  board[move[TO][X]*8+move[TO][Y]] = board[move[FROM][X]*8+move[FROM][Y]];
+  board[move[FROM][X]*8+move[FROM][Y]] = 0;
+
+  if(board[move[FROM][X]*8+move[FROM][Y]]==pawn)
+  {
+      savedData.push( pawnPromotion(move, player) );
+  }
+  return savedData;
+}
+
+function revertMove(savedData)
+{
+  for(var i=0; i<savedData.length; i++)
+  {
+    if(savedData[i]==undefined) return false;
+    board[savedData[i][0][FROM][X]*8+savedData[i][0][FROM][Y]] = savedData[i][1];
+    board[savedData[i][0][TO][X]*8+savedData[i][0][TO][Y]] = savedData[i][2]; 
+  }
 }
 

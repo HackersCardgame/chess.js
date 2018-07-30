@@ -1,361 +1,301 @@
+const cols=8;
+const rows=8;
 
-var blackKingMoved=false;
-var whiteKingMoved=false;
-var blackT1Moved=false;
-var blackT2Moved=false;
-var whiteT1Moved=false;
-var whiteT2Moved=false;
+const emptyField =   0;
 
-function checking(from, to, realMove, player) {
-    if(from[0]==to[0]&&from[1]==to[1]) return false;
-    
-    if(realMove)
-      if(isCheck(player, [from, to]))
-        return false;
+const whitePawn =    1;
+const whiteBishop =  5;
+const whiteKnight =  7;
+const whiteRook =   10;
+const whiteQueen =  30;
+const whiteKing =  100;
 
-    if(checkPawn(from, to, realMove)) return true;
-
-    if(checkKnight(from, to))
-    {
-      if(comp(from, [7,4]))
-        whiteKingMoved=true; 
-
-      if(comp(from, [0,4]))
-        blackKingMoved=true;
-
-      return true;
-    }
-
-    if(checkBishop(from, to)) return true;
-    
-    if(checkRook(from, to))
-    {
-      if(comp(from, [7,0]))
-        if (realMove) whiteT1Moved=true;
-      if(comp(from, [7,7]))
-        if (realMove) whiteT2Moved=true;
-
-      if(comp(from, [0,0]))
-        if (realMove) blackT1Moved=true;
-      if(comp(from, [0,7]))
-        if (realMove) blackT2Moved=true;
-
-      return true;
-    }
-    
-    if(checkQueen(from, to)) return true;
-    
-    if(checkKing(from, to, realMove))
-    {
-
-      if(comp(from, [7,4]))
-        if (realMove) whiteKingMoved=true;
-
-      if(comp(from, [0,4]))
-        if (realMove) blackKingMoved=true;
-        
-      return true;
-    }
-
-  return false;
-}
+const blackPawn =   -1;
+const blackBishop = -5;
+const blackKnight = -7;
+const blackRook =  -10;
+const blackQueen = -30;
+const blackKing = -100;
 
 
-function checkPawn(from, to, realMove) {
-  player = 0;
-  if (myboard[from[0]][from[1]]=="♟") 
-    player = 1;
-  if (myboard[from[0]][from[1]]=="♙") 
-    player = -1;
-  
-  if(player == 0) return false;
 
-    //check single move
-    delta = sub(to, from);
-    if(comp(delta, [1*player, 0]) && !isEnemy(from,to) && isEmpty(to))
-    {
-      if(to[0]==0 && realMove)
-        selectFigure(to); 
-      return true;
-    }
-    
-    //check double start move
-    if(comp(delta, [2*player, 0]) && isEmpty([to[0],to[1]]) && isEmpty([from[0]+player,from[1]]) && (from[0]==1 ||from[0]==6)) 
-      if(!isEnemy(from, to))
-        return true;
-    
-    //check diagonal 1 when attacking enemy
-    if( ( comp(delta, [1*player, 1*player]) && isEnemy(from, to) ) || ( comp(delta, [1*player, -1*player]) && isEnemy(from, to) ) )
-    {
-      if(to[0]==0 && realMove)
-        selectFigure(to); 
-      return true;
-    }
+var board = new Int8Array(cols*rows);
 
+var from = new Int8Array(2);
+var to = new Int8Array(2);
+var player = new Int8Array(1);
+
+
+function checking(from, to, player)
+{
+  //check if player wants to move his own figures
+  if(player*board[from[0]*8+from[1]]<0)
     return false;
 
-}
+  //check if move is not to the same field
+  if(from[0]==to[0]&&from[1]==to[1])
+    return false;
 
-
-function checkKnight(from, to) {
-  player = 0;
-  if (myboard[from[0]][from[1]]=="♞") 
-    player = 1;
-  if (myboard[from[0]][from[1]]=="♘") 
-    player = -1;
-
-  if(player == 0) return false;
-
-  //check if move is an 2 by 1 move in each direction with a for loop
-  delta = sub(to, from);
-
-  for(var i = 0; i < 2; i++)
-    for(var j = 0; j < 2; j++)
-    {
-      if(i==0) k=1;
-      else k=-1;
-      if(j==0) l=1;
-      else l=-1;
-
-      if(comp(delta, [(k*-1)*2, (l*-1)*1]) )
-        if(isEmpty(to) || isEnemy(from, to))
-          return true;
-      if(comp(delta, [(k*-1)*1, (l*-1)*2]) )
-        if(isEmpty(to) || isEnemy(from, to))
-          return true;
-     }
-     return false;
-}
-
-function checkBishop(from, to) {
-  player = 0;
-  if (myboard[from[0]][from[1]]=="♝") 
-    player = 1;
-  if (myboard[from[0]][from[1]]=="♗") 
-    player = -1;
-
-  if(player == 0) return false;
-
-  return checkDiagonal(from, to);
-}
-
-
-function checkDiagonal(from, to) {
-
-  //check if move is diagonal
-  delta = sub(to, from);
-
-  if(Math.abs(delta[0])!=Math.abs(delta[1])) return false;  //TODO: without this line there is still a bug, why?
+  switch (board[from[0]*8+from[1]]) {
   
-  var direction = [0, 0];
-  var step = [0, 0];
-  direction[0] = Math.sign(delta[0]);
-  direction[1] = Math.sign(delta[1]);
-  delta[0] = Math.abs(delta[0]);
-  delta[1] = Math.abs(delta[1]);
+    case whitePawn:
+      return checkPawn(from, to, player);
+      
+    case blackPawn:
+      return checkPawn(from, to, player);
+  
+    case whiteKnight:
+      return checkKnight(from, to, player);
 
-  for(var i=1; i<delta[0]+1; i++)
-  {
-    step[0] = from[0]+(direction[0]*scalar([1 ,1], i)[0]);
-    step[1] = from[1]+(direction[1]*scalar([1 ,1], i)[1]);
-    if(!isEmpty(step))
-    {
-      if(i==delta[0] && isEnemy(from, to))
-        return true;
-      return false;
-    }
-    if(comp(delta, scalar([1, 1], i)))
-      return true;
+    case blackKnight:
+      return checkKnight(from, to, player);
+  
+    case whiteBishop:
+      return checkBishop(from, to, player);
+      
+    case blackBishop:
+      return checkBishop(from, to, player);
+  
+    case whiteRook:
+      return checkRook(from, to, player);
+      
+    case blackRook:
+      return checkRook(from, to, player);
+
+    case whiteQueen:
+      return checkQueen(from, to, player);
+      
+    case blackQueen:
+      return checkQueen(from, to, player);
+
+    case whiteKing:
+      return checkKing(from, to, player);
+      
+    case blackKing:
+      return checkKing(from, to, player);
   }
 
   return false;
+}
+
+function checkPawn(from, to, player) {
+
+  //check single move
+  if(from[1]==to[1] && ((to[0]-from[0])==-player) && board[to[0]*8+to[1]]==0)
+    return true;
+  
+  var home=0;
+  
+  if(player==1) { home=6; traverse = 0; }
+  if(player==-1) { home=1; traverse = 7; }
+
+  
+  //check 2 field move (first move), tests: index.html#♜♞♝♛♚♝♞♜♟♟__♟_♟♟__________________♟♙________♙♟__♙♙♙♙♙♙♙♙♖♘♗♕♔♗♘♖
+  if(from[1]==to[1] && from[0]==home && ((to[0]-from[0])==-player*2) && board[to[0]*8+to[1]]==0 && board[(to[0]+player)*8+to[1]]==0)
+    return true;
+
+  var deltaVertical=to[0]-from[0];
+  var deltaHorizontal=Math.abs(to[1]-from[1]);
+  var target = board[to[0]*8+to[1]];
+
+  //check beating an opponents chess piece diagonal, tests: index.html#♜♞♝♛♚♝♞♜♟♟♟♟♟♟♟_____♟______♟♟_______♙______♙____♙♙♙__♙♙♙♖♘♗♕♔♗♘♖
+  if(deltaHorizontal==1 && deltaVertical*player==-1 && player*target<0)
+    return true;
+
+    
+  return false;
+}
+
+function checkKnight(from, to, player) {
+
+  //check 1 to the side and 2 up or down
+  if(Math.abs(from[1]-to[1])==1 && Math.abs(from[0]-to[0])==2 && board[to[0]*8+to[1]]*player<=0)
+    return true;
+    
+  //check 2 to the side and 1 up or down
+  if(Math.abs(from[1]-to[1])==2 && Math.abs(from[0]-to[0])==1 && board[to[0]*8+to[1]]*player<=0)
+    return true;
+    
+  return false;
+}
+
+
+function checkBishop(from, to, player) {
+
+  var vertical=from[0]-to[0];
+  var horizontal=from[1]-to[1];
+
+  var stepsVertical=Math.abs(vertical);
+  var stepsHorizontal=Math.abs(horizontal)
+
+  var directionVertical=vertical/stepsVertical;
+  var directionHorizontal=horizontal/stepsHorizontal;
+  
+
+
+  //check diagonal if move is not diagonal
+  if( stepsVertical!=stepsHorizontal )
+    return false;
+
+  //check if there is a figure between the start and endpoint
+  for(var i=1; i<stepsVertical; i++)
+    if(board[(from[0]-i*directionVertical)*8+from[1]-i*directionHorizontal]!=0)
+      return false;
+
+  //check if its empty or opponent
+  if(board[to[0]*8+to[1]]*player<=0)
+    return true;
+
+  return false;
+}
+
+function checkRook(from, to, player) {
+
+  var vertical=from[0]-to[0];
+  var horizontal=from[1]-to[1];
+
+  var stepsVertical=Math.abs(vertical);
+  var stepsHorizontal=Math.abs(horizontal)
+
+  var directionVertical=vertical/stepsVertical;
+  var directionHorizontal=horizontal/stepsHorizontal;
+
+
+  //check if only vertical or only horizontal
+  if ( stepsHorizontal!=0 && stepsVertical!=0 )
+  {
+    return false;
+  }
+  
+  if(stepsVertical==0)
+    for(var i=1; i<stepsHorizontal; i++)
+      if(board[from[0]*8+from[1]-i*directionHorizontal]!=0)
+        return false;
+
+  if(stepsHorizontal==0)
+    for(var i=1; i<stepsVertical; i++)
+      if(board[(from[0]-i*directionVertical)*8+from[1]]!=0)
+        return false;
+        
+  //check if its empty or opponent
+  if(board[to[0]*8+to[1]]*player<=0)
+    return true;        
+    
+  return false;
+    
+}
+
+function checkQueen(from, to, player) {
+
+  //reuse the tests from Bishop and Rook  
+  return checkBishop(from, to, player) || checkRook(from, to, player);
+  
+  return false;
 
 }
 
-function checkRook(from, to) {
-  player = 0;
-  if (myboard[from[0]][from[1]]=="♜") 
-    player = 1;
-  if (myboard[from[0]][from[1]]=="♖") 
-    player = -1;
+function checkKing(from, to, player) {
 
-  if(player == 0) return false;
-
-  return checkStraight(from, to);
-
-}
-
-function checkStraight(from, to) {
-  //check if move is straight
-  delta = sub(to, from);
-
-  //check if there are any obstacles vertically
-  if (delta[0]==0)
-    for(var i=1; i<Math.abs(delta[1])+1; i++)
-    {
-      field = [];
-      field[0] = from[0];
-      field[1] = from[1]+i*Math.sign(delta[1]);
-
-      if(!isEmpty(field))
-      {
-        if (i==Math.abs(delta[1]) && isEnemy(from, to))
-          return true;
-        return false;
-      }
-    }
-
-
-  //check if there are any obstacles horizontaly
-  if (delta[1]==0)
-    for(var i=1; i<Math.abs(delta[0])+1; i++)
-    {
-      field = [];
-      field[0] = from[0]+i*Math.sign(delta[0]);
-      field[1] = from[1];
-
-      if(!isEmpty(field))
-      {
-        if (i==Math.abs(delta[0]) && isEnemy(from, to))
-          return true;
-        return false;
-      }
-    }
-
-  //if there is noting between start and endpoint and we move only straight we return true
-  if (delta[0]==0 || delta[1]==0)
+  var vertical=from[0]-to[0];
+  var horizontal=from[1]-to[1];
+  
+  var stepsVertical=Math.abs(vertical);
+  var stepsHorizontal=Math.abs(horizontal)
+  
+  if( ( stepsVertical==1 && stepsHorizontal==1 || 
+        stepsVertical==0 && stepsHorizontal==1 ||
+        stepsVertical==1 && stepsHorizontal==0    ) && board[to[0]*8+to[1]]*player<=0 )
     return true;
 
 
+  return castlingMovePossible([from, to], player);
+}
 
+
+
+function castlingMovePossible(move, player) {
+  if(move[1][0]==7&&move[1][1]==6)   //Check small Castling (rochade) move white
+    if(board[move[0][0]*8+move[0][1]]==whiteKing)
+      if(board[7*8+5]==emptyField)
+        if(board[7*8+6]==emptyField)
+          if(board[7*8+7]==whiteRook)
+            return true;
+
+  if(move[1][0]==0&&move[1][1]==6)   //Check small Castling (rochade) move black
+    if(board[move[0][0]*8+move[0][1]]==blackKing)
+      if(board[0*8+5]==emptyField)
+        if(board[0*8+6]==emptyField)
+          if(board[0*8+7]==blackRook)
+              return true;
   return false;
-  
+}
+
+function postMoveProcessing(move, player)
+{
+  console.log("postMoveProcessing: "+move +" p: "+player);
+  makeCastlingMove(move, player);
+  pawnPromotion(move, player);
 }
 
 
-function checkQueen(from, to) {
-  player = 0;
-  if (myboard[from[0]][from[1]]=="♛") 
-    player = 1;
-  if (myboard[from[0]][from[1]]=="♕") 
-    player = -1;
+function castlingMovePossible(move, player) {
+  if(move[1][0]==7&&move[1][1]==6)   //Check small Castling (rochade) move white
+    if(board[move[0][0]*8+move[0][1]]==whiteKing)
+      if(board[7*8+5]==emptyField)
+        if(board[7*8+6]==emptyField)
+          if(board[7*8+7]==whiteRook)
+            return true;
 
-  if(player == 0) return false;
-  
-  return checkDiagonal(from, to) || checkStraight(from, to);
+  if(move[1][0]==0&&move[1][1]==6)   //Check small Castling (rochade) move black
+    if(board[move[0][0]*8+move[0][1]]==blackKing)
+      if(board[0*8+5]==emptyField)
+        if(board[0*8+6]==emptyField)
+          if(board[0*8+7]==blackRook)
+              return true;
+  return false;
 }
 
 
-//TODO: Rochade programmieren: https://de.wikipedia.org/wiki/Rochade
-function checkKing(from, to, realMove) {
-  player = 0;
-  if (myboard[from[0]][from[1]]=="♚") 
-    player = 1;
-  if (myboard[from[0]][from[1]]=="♔") 
-    player = -1;
-
-  if(player == 0) return false;
-  
-  if(isWhite(getFigure([from,to])))
-    if(!whiteKingMoved && !whiteT2Moved)
-      if(comp(from, [7, 4]) && comp(to, [7, 6]) && realMove)
-      {
-        myboard[7][5]=myboard[7][7];
-        myboard[7][7]="";
-        return true;
-      }
-
-  if(isWhite(getFigure([from,to])))
-    if(!whiteKingMoved && !whiteT2Moved)
-      if(comp(from, [7, 4]) && comp(to, [7, 2]) && realMove)
-      {
-        myboard[7][3]=myboard[7][0];
-        myboard[7][0]="";
-        return true;
-      }
-  
-  if(isBlack(getFigure([from,to])))
-    if(!blackKingMoved && !blackT2Moved)
-      if(comp(from, [0, 4]) && comp(to, [0, 6]) && realMove)
-      {
-        myboard[0][5]=myboard[0][7];
-        myboard[0][7]="";
-        return true;
-      }
-
-  if(isBlack(getFigure([from,to])))
-    if(!blackKingMoved && !blackT2Moved)
-      if(comp(from, [0, 4]) && comp(to, [0, 2]) && realMove)
-      {
-        myboard[0][3]=myboard[0][0];
-        myboard[0][0]="";
-        return true;
-      }
-
-  delta = sub(to, from);
-  
-  //TODO: rochade und ersten zug einbauen
-  if(Math.abs(delta[0])>1 || Math.abs(delta[1])>1)
+function makeCastlingMove(move, player) {
+  var move2=[];
+  if(move[FROM][0]==7 && move[FROM][1]==4 && move[TO][0]==7 && move[TO][1]==6)
   {
-    return false;
+    move2=[[7,7],[7,5]];
+    board[move2[TO][0]*8+move2[TO][1]]=board[move2[FROM][0]*8+move2[FROM][1]];
+    board[move2[FROM][0]*8+move2[FROM][1]]=0;
+    return [ move2, board[move2[TO][0]*8+move2[TO][1]], board[move2[FROM][0]*8+move2[FROM][1]] ]; //here TO and From is exchanged because the move was already done
   }
-    
-  return checkDiagonal(from, to) || checkStraight(from, to);
+
+  if(move[FROM][0]==0 && move[FROM][1]==4 && move[TO][0]==0 && move[TO][1]==6)
+  {
+    move2=[[0,7],[0,5]];
+    board[move2[TO][0]*8+move2[TO][1]]=board[move2[FROM][0]*8+move2[FROM][1]];
+    board[move2[FROM][0]*8+move2[FROM][1]]=0;
+
+    return [ move2, board[move2[TO][0]*8+move2[TO][1]], board[move2[FROM][0]*8+move2[FROM][1]] ];  //here TO and From is exchanged because the move was already done
+  }
 }
 
 
-function isCheck(player, tempMove) {  //TODO: check and checkmate checking very ugly, maybe add tempBoard but this would affect performance
-  FROM = 0; TO = 1; X = 0; Y = 1;
-
-  tempBoard = copyArray(myboard);
-
-  var rollbacktemp = myboard[tempMove[TO][X]][tempMove[TO][Y]];
-  myboard[tempMove[TO][X]][tempMove[TO][Y]]=myboard[tempMove[FROM][X]][tempMove[FROM][Y]];
-  myboard[tempMove[FROM][X]][tempMove[FROM][Y]]="";
-    
-  currentPoints = evaluateBoard();
-  var moves = possibleMoves(-player);
-  
-  for(var i = 0; i<moves.length; i++)
-  {
-    //Make the move
-    var rollback = myboard[moves[i][TO][X]][moves[i][TO][Y]];
-    myboard[moves[i][TO][X]][moves[i][TO][Y]] = myboard[moves[i][FROM][X]][moves[i][FROM][Y]];
-    myboard[moves[i][FROM][X]][moves[i][FROM][Y]] = "";
-    
-    newPoints = evaluateBoard();
-    difference = currentPoints-newPoints;
-    if(difference==(player*100))
+function pawnPromotion(move, player) {
+  if(player==1)
+    if(board[move[TO][0]*8+move[TO][1]]==whitePawn)
     {
-      console.log("IS CHECK");
-      return true;
+      if(move[TO][0]==0)
+      {
+        board[move[TO][0]*8+move[TO][1]]=whiteQueen;
+        return [move, board[move[FROM][0]*8+move[FROM][1]], board[move[TO][0]*8+move[TO][1]]]
+      }
     }
-    //Revert the move
-    myboard[moves[i][FROM][X]][moves[i][FROM][Y]] = myboard[moves[i][TO][X]][moves[i][TO][Y]];
-    myboard[moves[i][TO][X]][moves[i][TO][Y]] = rollback;
-   }
-   
-  //Revert the Tempmove
-  myboard[tempMove[FROM][X]][tempMove[FROM][Y]] = myboard[tempMove[TO][X]][tempMove[TO][Y]];
-  myboard[tempMove[TO][X]][tempMove[TO][Y]] = rollbacktemp;
 
-  return false;
+  if(player==-1)
+    if(board[move[TO][0]*8+move[TO][1]]==blackPawn)
+    {
+      if(move[TO][0]==7)
+      {
+        board[move[TO][0]*8+move[TO][1]]=blackQueen;
+        return [move, board[move[FROM][0]*8+move[FROM][1]], board[move[TO][0]*8+move[TO][1]]]
+      }
+    }
 }
 
-function isInCheck(player) {
-  FROM = 0; TO = 1; X = 0; Y = 1;
-
-  var moves = possibleMoves(-player);
-  
-  for(var i=0; i<moves.length; i++)
-  {
-    if(player=-1)
-      if(myboard[moves[i][TO][X]][moves[i][TO][Y]]=="♚")
-        return true;
-      
-    if(player=1)
-      if(myboard[moves[i][TO][X]][moves[i][TO][Y]]=="♔")
-        return true;
-  }
-  return false;
-}
