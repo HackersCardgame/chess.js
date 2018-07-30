@@ -9,7 +9,7 @@ button, input {
   width:50;
   height:50;
   border: none;
-  
+  padding: 0;  /*needed for ios iphone ipad*/ 
   text-align: center;
   text-decoration: none;
   font-size:33;
